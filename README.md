@@ -11,6 +11,9 @@ FBU App Design Project - README Template
 1. [Wireframes](#Wireframes)
 2. [Schema](#Schema)
 
+**Figma App**
+https://www.figma.com/file/Cus8DUS9m3aUvlcP9hx0Ne/FBU-App?node-id=0%3A1
+
 ## Overview
 ### Description
 Allows users to connect and find other local users that want to participate in a pick up game. The home screen will have all upcoming events nearby. 
