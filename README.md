@@ -67,8 +67,10 @@ V3 will allow you to chat with users within your organization.
 
 **Optional Nice-to-have Stories**
 
-* [fill in your required user stories here]
-* ...
+* Allow further customization of events (allow user to specify skill level)
+* Allow users to RSVP for an event, and show all users who have RSVP’d
+* Add user chat in organizations
+
 
 ### 2. Screen Archetypes
 
