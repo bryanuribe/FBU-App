@@ -1,6 +1,4 @@
-# FBU-App
-
-FBU App Design Project - README Template
+FBU App Design Project
 ===
 
 # APP_NAME_HERE
