@@ -22,7 +22,7 @@ Each event will feature details of the location/time and any notes that should b
 
 
 ### App Evaluation
-[Evaluation of your app across the following attributes]
+
 **Category:** Allows users to connect and find other local users that want to participate in a pick up game. The home screen will have all upcoming events nearby.  Users can also start their own private or public game. By starting a private event, only users within your organization will be able to see your event. By starting a public event, it will appear for all users. Each event will feature details of the location/time and any notes that should be considered.
 
 **Story:** In downtime, this app will be useful to finding other users who want to play a pick up game locally. Especially useful if your friends are busy at the moment.
