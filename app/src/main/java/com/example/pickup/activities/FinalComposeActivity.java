@@ -1,9 +1,11 @@
-package com.example.pickup;
+package com.example.pickup.activities;
 
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.pickup.R;
 
 public class FinalComposeActivity extends AppCompatActivity {
 

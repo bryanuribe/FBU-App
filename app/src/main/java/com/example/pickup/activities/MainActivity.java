@@ -1,4 +1,4 @@
-package com.example.pickup;
+package com.example.pickup.activities;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.example.pickup.R;
 import com.example.pickup.fragments.ComposeFragment;
 import com.example.pickup.fragments.HomeFragment;
 import com.example.pickup.fragments.EventsFragment;
