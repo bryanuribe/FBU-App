@@ -1,7 +1,7 @@
 FBU App Design Project
 ===
 
-# APP_NAME_HERE
+# PickUp+
 
 ## Table of Contents
 1. [Overview](#Overview)
