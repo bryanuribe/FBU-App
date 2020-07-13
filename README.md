@@ -9,7 +9,7 @@ FBU App Design Project
 1. [Wireframes](#Wireframes)
 2. [Schema](#Schema)
 
-**Figma App**
+**Figma**
 https://www.figma.com/file/Cus8DUS9m3aUvlcP9hx0Ne/FBU-App?node-id=0%3A1
 
 ## Overview
@@ -72,32 +72,47 @@ V3 will allow you to chat with users within your organization.
 
 ### 2. Screen Archetypes
 
-* [list first screen here]
-   * [list associated required story here]
-   * ...
-* [list second screen here]
-   * [list associated required story here]
-   * ...
+* Login Screen
+   * User can login
+* Registration Screen
+   * User can create a new account
+* Stream
+   * User can view a google maps feed of event locations
+   * User can tap a photo to view detail page of the event 
+   * User can swipe a detail to indicate they are attending
+* Creation
+   * User can post a new event to the google maps feed
+* Search
+   * User can search for events
+   * User can follow/unfollow organizations
+
 
 ### 3. Navigation
 
 **Tab Navigation** (Tab to Screen)
 
-* [fill out your first tab]
-* [fill out your second tab]
-* [fill out your third tab]
+* Stream Screen
+* Creation screen
+* Profile screen
+* User events screen
 
 **Flow Navigation** (Screen to Screen)
 
-* [list first screen here]
-   * [list screen navigation here]
-   * ...
-* [list second screen here]
-   * [list screen navigation here]
-   * ...
+* Login Screen
+   * Stream Screen
+* Registration Screen
+   * Stream Screen
+* Stream Screen (Google Maps)
+   * Creation Screen
+* Creation Screen
+   * Home (after you finish posting the photo)
+   * In the actual wireframe, you will need multiple screens to represent the creation process to add filters, etc.
+* Search Screen
+
 
 ## Wireframes
-
+**Figma**
+https://www.figma.com/file/Cus8DUS9m3aUvlcP9hx0Ne/FBU-App?node-id=0%3A1
 
 
 ## Schema 
