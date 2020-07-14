@@ -11,8 +11,8 @@ import androidx.fragment.app.FragmentManager;
 
 import com.example.pickup.R;
 import com.example.pickup.fragments.ComposeFragment;
-import com.example.pickup.fragments.HomeFragment;
 import com.example.pickup.fragments.EventsFragment;
+import com.example.pickup.fragments.MapsFragment;
 import com.example.pickup.fragments.ProfileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
                 Fragment fragment;
                 switch (menuItem.getItemId()) {
                     case R.id.action_home:
-                        fragment = new HomeFragment();
+                        fragment = new MapsFragment();
                         break;
                     case R.id.action_list:
                         fragment = new EventsFragment();
