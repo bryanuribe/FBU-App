@@ -45,6 +45,7 @@
         </activity>
         <activity android:name=".activities.MainActivity" />
         <activity android:name=".activities.SignupActivity" />
+        <activity android:name=".activities.FinalComposeActivity" />
     </application>
 
 </manifest>
