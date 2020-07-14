@@ -1,6 +1,7 @@
 package com.example.pickup.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,16 +14,26 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.pickup.R;
+import com.example.pickup.User;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
+
+import java.util.List;
 
 /**
  * A simple Fragment subclass.
  */
 public class ProfileFragment extends Fragment {
 
+    private static final String TAG = "ProfileFragment";
+
     EditText etFullname;
     EditText etUsername;
     Button btnSave;
+
+    User user;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -48,11 +59,21 @@ public class ProfileFragment extends Fragment {
         etFullname = view.findViewById(R.id.etFullname);
         etUsername = view.findViewById(R.id.etUsername);
 
-        etFullname.setText(ParseUser.getCurrentUser().getUsername());
-        etUsername.setText(ParseUser.getCurrentUser().getUsername());
+        ParseQuery<ParseUser> query = ParseQuery.getQuery(ParseUser.class);
+        query.findInBackground(new FindCallback<ParseUser>() {
+            @Override
+            public void done(List<ParseUser> users, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "done: Issue getting user", e);
+                    return;
+                }
+                ParseUser currentUser = users.get(0);
+                etFullname.setText(currentUser.getString("fullName"));
+                etUsername.setText(currentUser.getUsername());
+            }
+        });
 
         btnSave = view.findViewById(R.id.btnSave);
-
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

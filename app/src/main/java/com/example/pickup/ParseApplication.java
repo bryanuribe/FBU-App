@@ -1,4 +1,4 @@
-package com.example.pickup.activities;
+package com.example.pickup;
 
 import android.app.Application;
 
