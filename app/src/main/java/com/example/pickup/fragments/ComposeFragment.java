@@ -1,22 +1,25 @@
 package com.example.pickup.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RadioGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.pickup.navigation.Navigation;
+import com.example.pickup.functionality.ComposeFunctionality;
+import com.example.pickup.models.MyCalendar;
 import com.example.pickup.R;
 
 import java.util.Calendar;
 
 import devs.mulham.horizontalcalendar.HorizontalCalendar;
-import devs.mulham.horizontalcalendar.HorizontalCalendarView;
 import devs.mulham.horizontalcalendar.utils.HorizontalCalendarListener;
 
 /**
@@ -24,9 +27,14 @@ import devs.mulham.horizontalcalendar.utils.HorizontalCalendarListener;
  */
 public class ComposeFragment extends Fragment {
 
-    private Button btnNext;
+    private static final String TAG = "ComposeFragment";
 
-    HorizontalCalendar horizontalCalendar;
+    private HorizontalCalendar horizontalCalendar;
+    private EditText etTime;
+    private RadioGroup radioSport;
+    private EditText etLocation;
+    private EditText etNotes;
+    private Button btnNext;
 
     public ComposeFragment() {
         // Required empty public constructor
@@ -49,45 +57,43 @@ public class ComposeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        btnNext = view.findViewById(R.id.btnNext);
+        horizontalCalendar = MyCalendar.makeHorizontalCalendar(view.getRootView(), R.id.calendar);
+        horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
+            @Override
+            public void onDateSelected(Calendar date, int position) {}
+        });
+        
+        etTime = view.findViewById(R.id.etTime);
+        etLocation = view.findViewById(R.id.etLocation);
+        etNotes = view.findViewById(R.id.etNotes);
 
+        btnNext = view.findViewById(R.id.btnNext);
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 // Check if all fields filled out
-                Navigation.goPreviewComposeScreen(getActivity());
+                boolean allFieldsFilled = ComposeFunctionality.allFieldsFilled(horizontalCalendar, etTime, etLocation, etNotes);
+                Log.i(TAG, "onClick " + allFieldsFilled);
+
+                if (allFieldsFilled) {
+
+                    // Save event in database
+
+                    // On success submit to google maps
+
+                    // On success locally put pin on google maps
+
+                    // Change camera location
+
+                    // Handle errors if any one fails
+
+                    // Clear text fields
+
+                    // TODO: preview screen
+                    //Navigation.goPreviewComposeScreen(getActivity());
+                }
             }
         });
-
-        /* starts before 1 month from now */
-        Calendar startDate = Calendar.getInstance();
-        startDate.add(Calendar.MONTH, -1);
-
-        /* ends after 1 month from now */
-        Calendar endDate = Calendar.getInstance();
-        endDate.add(Calendar.MONTH, 1);
-
-        HorizontalCalendar horizontalCalendar = new HorizontalCalendar.Builder(view.getRootView(), R.id.calendar).range(startDate, endDate)
-                .datesNumberOnScreen(5)
-                .build();
-
-        horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
-            @Override
-            public void onDateSelected(Calendar date, int position) {
-
-            }
-
-            @Override
-            public void onCalendarScroll(HorizontalCalendarView calendarView,
-                                         int dx, int dy) {
-
-            }
-
-            @Override
-            public boolean onDateLongClicked(Calendar date, int position) {
-                return true;
-            }
-        });
-
     }
 }
