@@ -1,6 +1,7 @@
 package com.example.pickup.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,12 @@ import androidx.fragment.app.Fragment;
 
 import com.example.pickup.R;
 import com.example.pickup.models.UserUI;
+import com.example.pickup.parse.EventParse;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
+
+import java.util.List;
 
 /**
  * A simple Fragment subclass.
@@ -26,7 +33,8 @@ public class ProfileFragment extends Fragment {
     EditText etUsername;
     Button btnSave;
 
-    UserUI user = new UserUI();
+    EventParse event;
+    UserUI user;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -52,12 +60,36 @@ public class ProfileFragment extends Fragment {
         etFullname = view.findViewById(R.id.etFullname);
         etUsername = view.findViewById(R.id.etUsername);
 
-        //etUsername.setText(UserUI.getFullName());
+        event = new EventParse();
+
+        user = new UserUI();
+
+        user.query();
+
+        ParseQuery<EventParse> query = ParseQuery.getQuery(EventParse.class);
+        query.findInBackground(new FindCallback<EventParse>() {
+            @Override
+            public void done(List<EventParse> events, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "done: Issue getting user", e);
+                    return;
+                }
+
+                //Log.i(TAG, "done: " + events.get(0).getTime());
+            }
+        });
+
+
+        Log.i(TAG, "onViewCreated: " + query.toString());
+
+        //etUsername.setText(user.getUsername());
+        //etFullname.setText(user.getFullname());
 
         btnSave = view.findViewById(R.id.btnSave);
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 Toast.makeText(getActivity(), "Saved!", Toast.LENGTH_SHORT).show();
             }
         });
