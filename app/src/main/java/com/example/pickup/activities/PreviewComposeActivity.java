@@ -10,14 +10,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.pickup.R;
 
-public class FinalComposeActivity extends AppCompatActivity {
+public class PreviewComposeActivity extends AppCompatActivity {
 
     private Button btnSubmit;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_final_compose);
+        setContentView(R.layout.activity_preview_compose);
 
         btnSubmit = findViewById(R.id.btnSubmit);
 
@@ -27,6 +27,11 @@ public class FinalComposeActivity extends AppCompatActivity {
                 goMainActivity();
             }
         });
+
+        //HorizontalCalendar horizontalCalendar = new HorizontalCalendar.Builder(this, R.id.calendar)
+          //      .range(startDate, endDate)
+            //    .datesNumberOnScreen(5)
+              //  .build();
     }
 
     private void goMainActivity() {

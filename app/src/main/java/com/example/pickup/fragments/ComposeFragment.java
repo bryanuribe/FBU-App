@@ -1,6 +1,5 @@
 package com.example.pickup.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,8 +10,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.pickup.navigation.Navigation;
 import com.example.pickup.R;
-import com.example.pickup.activities.FinalComposeActivity;
+
+import java.util.Calendar;
+
+import devs.mulham.horizontalcalendar.HorizontalCalendar;
+import devs.mulham.horizontalcalendar.HorizontalCalendarView;
+import devs.mulham.horizontalcalendar.utils.HorizontalCalendarListener;
 
 /**
  * A simple Fragment subclass.
@@ -20,6 +25,8 @@ import com.example.pickup.activities.FinalComposeActivity;
 public class ComposeFragment extends Fragment {
 
     private Button btnNext;
+
+    HorizontalCalendar horizontalCalendar;
 
     public ComposeFragment() {
         // Required empty public constructor
@@ -47,13 +54,40 @@ public class ComposeFragment extends Fragment {
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                goFinalComposeScreen();
+                // Check if all fields filled out
+                Navigation.goPreviewComposeScreen(getActivity());
             }
         });
-    }
 
-    private void goFinalComposeScreen() {
-        Intent i = new Intent(getActivity(), FinalComposeActivity.class);
-        startActivity(i);
+        /* starts before 1 month from now */
+        Calendar startDate = Calendar.getInstance();
+        startDate.add(Calendar.MONTH, -1);
+
+        /* ends after 1 month from now */
+        Calendar endDate = Calendar.getInstance();
+        endDate.add(Calendar.MONTH, 1);
+
+        HorizontalCalendar horizontalCalendar = new HorizontalCalendar.Builder(view.getRootView(), R.id.calendar).range(startDate, endDate)
+                .datesNumberOnScreen(5)
+                .build();
+
+        horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
+            @Override
+            public void onDateSelected(Calendar date, int position) {
+
+            }
+
+            @Override
+            public void onCalendarScroll(HorizontalCalendarView calendarView,
+                                         int dx, int dy) {
+
+            }
+
+            @Override
+            public boolean onDateLongClicked(Calendar date, int position) {
+                return true;
+            }
+        });
+
     }
 }
