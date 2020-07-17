@@ -1,4 +1,4 @@
-package com.example.pickup.parse;
+package com.example.pickup.models;
 
 import com.parse.ParseClassName;
 import com.parse.ParseObject;

@@ -1,7 +1,6 @@
 package com.example.pickup.fragments;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,13 +13,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.pickup.R;
-import com.example.pickup.models.UserUI;
-import com.example.pickup.parse.EventParse;
-import com.parse.FindCallback;
-import com.parse.ParseException;
-import com.parse.ParseQuery;
-
-import java.util.List;
+import com.example.pickup.managers.ProfileManager;
+import com.example.pickup.models.EventParse;
+import com.parse.ParseUser;
 
 /**
  * A simple Fragment subclass.
@@ -31,10 +26,12 @@ public class ProfileFragment extends Fragment {
 
     EditText etFullname;
     EditText etUsername;
+    EditText etTeam;
+    EditText etBio;
     Button btnSave;
 
     EventParse event;
-    UserUI user;
+    ParseUser user;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -59,37 +56,20 @@ public class ProfileFragment extends Fragment {
 
         etFullname = view.findViewById(R.id.etFullname);
         etUsername = view.findViewById(R.id.etUsername);
+        etTeam = view.findViewById(R.id.etTeam);
+        etBio = view.findViewById(R.id.etBio);
 
         event = new EventParse();
+        user = ParseUser.getCurrentUser();
 
-        user = new UserUI();
-
-        user.query();
-
-        ParseQuery<EventParse> query = ParseQuery.getQuery(EventParse.class);
-        query.findInBackground(new FindCallback<EventParse>() {
-            @Override
-            public void done(List<EventParse> events, ParseException e) {
-                if (e != null) {
-                    Log.e(TAG, "done: Issue getting user", e);
-                    return;
-                }
-
-                //Log.i(TAG, "done: " + events.get(0).getTime());
-            }
-        });
-
-
-        Log.i(TAG, "onViewCreated: " + query.toString());
-
-        //etUsername.setText(user.getUsername());
-        //etFullname.setText(user.getFullname());
+        ProfileManager.setProfileFields(etUsername, etFullname, etTeam, etBio);
 
         btnSave = view.findViewById(R.id.btnSave);
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                // Safe profile to database
+                ProfileManager.saveProfile(user, etUsername, etFullname, etTeam, etBio);
                 Toast.makeText(getActivity(), "Saved!", Toast.LENGTH_SHORT).show();
             }
         });

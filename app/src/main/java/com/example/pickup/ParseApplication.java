@@ -1,7 +1,8 @@
-package com.example.pickup.parse;
+package com.example.pickup;
 
 import android.app.Application;
 
+import com.example.pickup.models.EventParse;
 import com.parse.Parse;
 import com.parse.ParseObject;
 
@@ -12,7 +13,6 @@ public class ParseApplication extends Application {
         super.onCreate();
 
         // Register your parse models
-        ParseObject.registerSubclass(UserParse.class);
         ParseObject.registerSubclass(EventParse.class);
 
         // set applicationId, and server server based on the values in the Heroku settings.

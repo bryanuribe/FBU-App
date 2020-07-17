@@ -14,7 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.pickup.R;
-import com.example.pickup.functionality.ComposeFunctionality;
+import com.example.pickup.managers.ComposeManager;
 import com.example.pickup.models.MyCalendar;
 
 import java.util.Calendar;
@@ -73,7 +73,7 @@ public class ComposeFragment extends Fragment {
             public void onClick(View view) {
 
                 // Check if all fields filled out
-                boolean allFieldsFilled = ComposeFunctionality.allFieldsFilled(horizontalCalendar, etTime, etLocation, etNotes);
+                boolean allFieldsFilled = ComposeManager.allFieldsFilled(horizontalCalendar, etTime, etLocation, etNotes);
 
                 if (allFieldsFilled) {
 

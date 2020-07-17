@@ -1,12 +1,12 @@
-package com.example.pickup.functionality;
+package com.example.pickup.managers;
 
 import android.widget.EditText;
 
 import devs.mulham.horizontalcalendar.HorizontalCalendar;
 
-public class ComposeFunctionality {
+public class ComposeManager {
 
-    private static final String TAG = "ComposeFunctionality";
+    private static final String TAG = "ComposeManager";
 
     public static boolean allFieldsFilled(HorizontalCalendar horizontalCalendar, EditText etTime, EditText etLocation, EditText etNotes) {
 
