@@ -78,6 +78,7 @@ public class ComposeFragment extends Fragment {
                 if (allFieldsFilled) {
 
                     // Save event in database
+                    ComposeManager.saveEvent(getContext(), horizontalCalendar, etTime, etLocation, etNotes);
 
                     // On success submit to google maps
 
