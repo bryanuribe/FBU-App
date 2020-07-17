@@ -5,13 +5,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.pickup.navigation.Navigation;
 import com.example.pickup.R;
+import com.example.pickup.managers.LoginManager;
+import com.example.pickup.navigation.Navigation;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -27,7 +27,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        if (Navigation.checkUserLoggedin()) {
+        // If user is already logged in go to main activity
+        if (LoginManager.checkUserLoggedin()) {
             Navigation.goMainActivity(this);
         };
 
@@ -40,16 +41,14 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.i(TAG, "onClick: Log In Button");
-                String username = etUsername.getText().toString();
-                String password = etPassword.getText().toString();
-                Navigation.loginUser(LoginActivity.this, username, password);
+                LoginManager.loginUser(LoginActivity.this, etUsername, etPassword);
             }
         });
 
         btnSignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(LoginActivity.this, "Sign Up!", Toast.LENGTH_SHORT).show();
+                Navigation.goSignupActivity(LoginActivity.this);
             }
         });
     }

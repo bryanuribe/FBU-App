@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -69,8 +68,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 // Safe profile to database
-                ProfileManager.saveProfile(user, etUsername, etFullname, etTeam, etBio);
-                Toast.makeText(getActivity(), "Saved!", Toast.LENGTH_SHORT).show();
+                ProfileManager.saveProfile(getContext(), user, etFullname, etUsername, etTeam, etBio);
             }
         });
     }

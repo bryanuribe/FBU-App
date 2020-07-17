@@ -1,7 +1,9 @@
 package com.example.pickup.managers;
 
+import android.content.Context;
 import android.util.Log;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -20,9 +22,10 @@ public class ProfileManager {
     public static final String KEY_TEAM = "team";
     public static final String KEY_BIO = "bio";
     
-    // Getters
-    public static void setProfileFields(final EditText etUsername, final EditText etFullname, final EditText etTeam, final EditText etBio) {
+    // Getter
+    public static void setProfileFields(final EditText etFullname, final EditText etUsername, final EditText etTeam, final EditText etBio) {
 
+        // Create query to find fields equal to current user
         ParseQuery<ParseUser> query = ParseQuery.getQuery(ParseUser.class);
         query.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
         query.findInBackground(new FindCallback<ParseUser>() {
@@ -33,23 +36,40 @@ public class ProfileManager {
                     return;
                 }
                 ParseUser currentUser = user.get(0);
-                etUsername.setText(currentUser.getString(KEY_USERNAME));
                 etFullname.setText(currentUser.getString(KEY_FULLNAME));
+                etUsername.setText(currentUser.getString(KEY_USERNAME));
                 etTeam.setText(currentUser.getString(KEY_TEAM));
                 etBio.setText(currentUser.getString(KEY_BIO));
             }
         });
     }
 
-    // Setters
-    public static void saveProfile(ParseUser user, EditText etUsername, EditText etFullname, EditText etTeam, EditText etBio) {
+    private static boolean requiredFieldsEmpty(EditText etUsername, EditText etFullname) {
 
+        // Get fields from text views
+        boolean usernameEmpty = etUsername.getText().toString().isEmpty();
+        boolean fullnameEmpty = etFullname.getText().toString().isEmpty();
+
+        // Username or Fullname not filled
+        if (usernameEmpty || fullnameEmpty) {
+            return true;
+        }
+        return false;
+    }
+
+    // Setter
+    public static void saveProfile(final Context currentContext, ParseUser user, EditText etUsername, EditText etFullname, EditText etTeam, EditText etBio) {
+
+        if (requiredFieldsEmpty(etUsername, etFullname)) {
+            return;
+        }
         // Get fields from text views
         String username = etUsername.getText().toString();
         String fullname = etFullname.getText().toString();
         String team = etTeam.getText().toString();
         String bio = etBio.getText().toString();
 
+        // Update fields
         user.put(KEY_USERNAME, username);
         user.put(KEY_FULLNAME, fullname);
         user.put(KEY_TEAM, team);
@@ -62,6 +82,7 @@ public class ProfileManager {
                     Log.e(TAG, "done: Error while saving", e);
                 }
                 Log.i(TAG, "done: Save user successful!");
+                Toast.makeText(currentContext, "Saved!", Toast.LENGTH_SHORT).show();
             }
         });
     }
