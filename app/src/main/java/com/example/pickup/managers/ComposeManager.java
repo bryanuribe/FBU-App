@@ -36,7 +36,7 @@ public class ComposeManager {
         return true;
     }
 
-    public static void saveEvent(final Context currentContext, HorizontalCalendar horizontalCalendar, final EditText etTime, final EditText etLocation, final EditText etNotes) {
+    public static void saveEvent(final Context currentContext, final HorizontalCalendar horizontalCalendar, final EditText etTime, final EditText etLocation, final EditText etNotes) {
 
         EventParse newEvent = new EventParse();
 
@@ -62,13 +62,14 @@ public class ComposeManager {
                 }
                 Log.i(TAG, "done: Save user successful!");
                 Toast.makeText(currentContext, "Event Created!", Toast.LENGTH_SHORT).show();
-                clearTextFields(etTime, etLocation, etNotes);
+                clearTextFields(horizontalCalendar, etTime, etLocation, etNotes);
             }
         });
 
     }
 
-    public static void clearTextFields (EditText etTime, EditText etLocation, EditText etNotes) {
+    public static void clearTextFields (HorizontalCalendar horizontalCalendar, EditText etTime, EditText etLocation, EditText etNotes) {
+        horizontalCalendar.goToday(false);
         etTime.setText("");
         etLocation.setText("");
         etNotes.setText("");
