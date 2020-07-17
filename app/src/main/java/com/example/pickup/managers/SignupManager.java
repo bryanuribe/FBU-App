@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.util.Log;
 import android.widget.EditText;
 
-import com.example.pickup.navigation.Navigation;
+import com.example.pickup.Navigation;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
@@ -12,6 +12,10 @@ import com.parse.SignUpCallback;
 public class SignupManager {
 
     private static final String TAG = "SignupManager";
+
+    public static final String KEY_USERNAME = "username";
+    public static final String KEY_FULLNAME = "fullname";
+    public static final String KEY_PASSWORD = "password";
 
     public static void signupUser(final Activity currentActivity, EditText etFullname, EditText etUsername, EditText etPassword) {
 
@@ -23,8 +27,9 @@ public class SignupManager {
         ParseUser user = new ParseUser();
 
         // Set core properties
-        user.setUsername(username);
-        user.setPassword(password);
+        user.put(KEY_FULLNAME, fullname);
+        user.put(KEY_USERNAME, username);
+        user.put(KEY_PASSWORD, password);
 
         // Invoke signUpInBackground
         user.signUpInBackground(new SignUpCallback() {

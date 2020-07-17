@@ -38,4 +38,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/btnSignout"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:rotation="180"
+        app:icon="@drawable/abc_vector_test"
+        app:layout_constraintBottom_toBottomOf="@+id/toolbar"
+        app:layout_constraintEnd_toEndOf="@+id/toolbar"
+        app:layout_constraintTop_toTopOf="@+id/toolbar"
+        tools:visibility="visible" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

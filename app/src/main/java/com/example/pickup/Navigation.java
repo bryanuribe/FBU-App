@@ -1,10 +1,12 @@
-package com.example.pickup.navigation;
+package com.example.pickup;
 
 import android.app.Activity;
 import android.content.Intent;
 
+import com.example.pickup.activities.LoginActivity;
 import com.example.pickup.activities.MainActivity;
 import com.example.pickup.activities.PreviewComposeActivity;
+import com.example.pickup.activities.SignupActivity;
 
 public class Navigation {
 
@@ -17,9 +19,8 @@ public class Navigation {
     }
 
     public static void goSignupActivity(Activity currentActivity) {
-        Intent i = new Intent(currentActivity, MainActivity.class);
+        Intent i = new Intent(currentActivity, SignupActivity.class);
         currentActivity.startActivity(i);
-        currentActivity.finish();
     }
 
 
@@ -28,4 +29,8 @@ public class Navigation {
         currentActivity.startActivity(i);
     }
 
+    public static void goLoginActivity(MainActivity currentActivity) {
+        Intent i = new Intent(currentActivity, LoginActivity.class);
+        currentActivity.startActivity(i);
+    }
 }
