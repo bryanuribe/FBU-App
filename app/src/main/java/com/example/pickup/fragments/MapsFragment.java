@@ -19,8 +19,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapsFragment extends Fragment {
 
-    private GoogleMap mMap;
-
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
         /**
@@ -36,7 +34,12 @@ public class MapsFragment extends Fragment {
         public void onMapReady(GoogleMap googleMap) {
             LatLng sydney = new LatLng(-34, 151);
             googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+            googleMap.addMarker(new MarkerOptions().position(sydney).title("My Marker"));
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+            // Load markers (events) from database
+
+            // Move camera to your last created event ?
         }
     };
 

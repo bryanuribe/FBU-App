@@ -1,11 +1,13 @@
 package com.example.pickup.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -31,7 +33,9 @@ public class ComposeFragment extends Fragment {
 
     private HorizontalCalendar horizontalCalendar;
     private EditText etTime;
-    private RadioGroup radioSport;
+    private RadioGroup radioGroupSport;
+    private RadioButton radioBtnSport;
+    private RadioButton radioBtnSoccer;
     private EditText etLocation;
     private EditText etNotes;
     private Button btnNext;
@@ -54,7 +58,7 @@ public class ComposeFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         horizontalCalendar = MyCalendar.makeHorizontalCalendar(view.getRootView(), R.id.calendar);
@@ -64,6 +68,21 @@ public class ComposeFragment extends Fragment {
         });
         
         etTime = view.findViewById(R.id.etTime);
+        radioGroupSport = view.findViewById(R.id.radioGroupSport);
+        radioGroupSport.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                radioBtnSport = view.findViewById(radioGroup.getCheckedRadioButtonId());
+
+                Log.i(TAG, "onCheckedChanged: " + radioBtnSport.getText().toString());
+            }
+        });
+
+        radioBtnSoccer = view.findViewById(R.id.radioBtnSoccer);
+        // Set to default value of soccer
+        radioBtnSport = view.findViewById(R.id.radioBtnSoccer);
+        Log.i(TAG, "onViewCreated: " + radioBtnSport.getText().toString());
+
         etLocation = view.findViewById(R.id.etLocation);
         etNotes = view.findViewById(R.id.etNotes);
 
@@ -78,20 +97,23 @@ public class ComposeFragment extends Fragment {
                 if (allFieldsFilled) {
 
                     // Save event in database
-                    ComposeManager.saveEvent(getContext(), horizontalCalendar, etTime, etLocation, etNotes);
+                    ComposeManager.saveEvent(getContext(), horizontalCalendar, etTime, radioBtnSport, etLocation, etNotes);
 
-                    // On success submit to google maps
+                    // Clear text fields
+                    ComposeManager.resetFields(horizontalCalendar, etTime, radioBtnSoccer, etLocation, etNotes);
 
-                    // On success locally put pin on google maps
+                    // On success save to database submit to google maps
+
+                    // On success submit to google map locally put pin on google maps
 
                     // Change camera location
 
                     // Handle errors if any one fails
 
-                    // Clear text fields
-
                     // TODO: preview screen
                     //Navigation.goPreviewComposeScreen(getActivity());
+
+
                 }
 
                 else {

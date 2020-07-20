@@ -34,7 +34,7 @@
         app:layout_constraintTop_toBottomOf="@+id/calendar" />
 
     <RadioGroup
-        android:id="@+id/radioGroup"
+        android:id="@+id/radioGroupSport"
         android:layout_width="99dp"
         android:layout_height="64dp"
         android:layout_marginTop="25dp"
@@ -43,13 +43,14 @@
         app:layout_constraintTop_toBottomOf="@+id/etTime">
 
         <RadioButton
-            android:id="@+id/radioButton"
+            android:id="@+id/radioBtnSoccer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Soccer" />
+            android:text="Soccer"
+            android:checked="true"/>
 
         <RadioButton
-            android:id="@+id/radioButton2"
+            android:id="@+id/radioBtnBasketball"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Basketball" />
@@ -70,7 +71,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/radioGroup"
+        app:layout_constraintTop_toBottomOf="@+id/radioGroupSport"
         tools:text="Enter Location" />
 
     <EditText

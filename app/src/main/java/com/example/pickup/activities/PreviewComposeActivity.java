@@ -27,11 +27,6 @@ public class PreviewComposeActivity extends AppCompatActivity {
                 goMainActivity();
             }
         });
-
-        //HorizontalCalendar horizontalCalendar = new HorizontalCalendar.Builder(this, R.id.calendar)
-          //      .range(startDate, endDate)
-            //    .datesNumberOnScreen(5)
-              //  .build();
     }
 
     private void goMainActivity() {
