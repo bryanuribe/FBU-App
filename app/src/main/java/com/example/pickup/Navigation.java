@@ -8,6 +8,8 @@ import com.example.pickup.activities.MainActivity;
 import com.example.pickup.activities.PreviewComposeActivity;
 import com.example.pickup.activities.SignupActivity;
 
+import java.util.concurrent.TimeUnit;
+
 public class Navigation {
 
     private static final String TAG = "Navigation";
@@ -32,5 +34,13 @@ public class Navigation {
     public static void goLoginActivity(MainActivity currentActivity) {
         Intent i = new Intent(currentActivity, LoginActivity.class);
         currentActivity.startActivity(i);
+    }
+
+    public static void sleepApp(int seconds) {
+        try {
+            TimeUnit.SECONDS.sleep(seconds);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
