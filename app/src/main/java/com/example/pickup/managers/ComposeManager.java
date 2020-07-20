@@ -26,13 +26,6 @@ public class ComposeManager {
 
     private static final String TAG = "ComposeManager";
 
-    public static final String KEY_DATE = "eventDate";
-    public static final String KEY_TIME = "eventTime";
-    public static final String KEY_SPORT = "sport";
-    public static final String KEY_FORMATTED_LOCATION = "formattedLocation";
-    public static final String KEY_GEOPOINT_LOCATION = "geopointLocation";
-    public static final String KEY_NOTES = "notes";
-
     public static final String GEOPOINT_URL = "https://maps.googleapis.com/maps/api/geocode/json?address=";
     public static final String API_KEY = "&key=AIzaSyDAqSxvNJg6ricJ-kNRgkrqqOuvW8cf5z4";
 
@@ -100,12 +93,12 @@ public class ComposeManager {
                     // Update fields
                     EventParse newEvent = new EventParse();
 
-                    newEvent.put(KEY_DATE, date);
-                    newEvent.put(KEY_TIME, time);
-                    newEvent.put(KEY_SPORT, sportSelected);
-                    newEvent.put(KEY_FORMATTED_LOCATION, formattedLocation[0]);
-                    newEvent.put(KEY_GEOPOINT_LOCATION, geoPoint);
-                    newEvent.put(KEY_NOTES, notes);
+                    newEvent.setDate(date);
+                    newEvent.setTime(time);
+                    newEvent.setSport(sportSelected);
+                    newEvent.setFormattedLocation(formattedLocation[0]);
+                    newEvent.setGeopointLocation(geoPoint);
+                    newEvent.setNotes(notes);
 
                     newEvent.saveInBackground(new SaveCallback() {
                         @Override

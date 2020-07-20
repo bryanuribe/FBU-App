@@ -96,23 +96,18 @@ public class ComposeFragment extends Fragment {
 
                 if (allFieldsFilled) {
 
+                    //TODO: Handle errors on any step
+
                     // Save event in database
                     ComposeManager.saveEvent(getContext(), horizontalCalendar, etTime, radioBtnSport, etLocation, etNotes);
 
                     // Clear text fields
                     ComposeManager.resetFields(horizontalCalendar, etTime, radioBtnSoccer, etLocation, etNotes);
 
-                    // On success save to database submit to google maps
-
-                    // On success submit to google map locally put pin on google maps
-
-                    // Change camera location
-
-                    // Handle errors if any one fails
-
                     // TODO: preview screen
                     //Navigation.goPreviewComposeScreen(getActivity());
 
+                    // Go to Google Maps fragment
 
                 }
 

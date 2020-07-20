@@ -10,12 +10,15 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.pickup.R;
+import com.example.pickup.managers.MapsManager;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.concurrent.TimeUnit;
 
 public class MapsFragment extends Fragment {
 
@@ -32,14 +35,27 @@ public class MapsFragment extends Fragment {
          */
         @Override
         public void onMapReady(GoogleMap googleMap) {
+
+            // TODO: Save location of map, dont always have map animation
             LatLng sydney = new LatLng(-34, 151);
             googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-            googleMap.addMarker(new MarkerOptions().position(sydney).title("My Marker"));
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
-            // Load markers (events) from database
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
-            // Move camera to your last created event ?
+            // Test
+            LatLng test = new LatLng(0, 0);
+            googleMap.animateCamera(CameraUpdateFactory.newLatLng(test));
+
+            // Query events (events) from database
+            MapsManager.queryEvents();
+
+            // Move camera to your last created event
+
         }
     };
 
