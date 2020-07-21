@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.pickup.Navigation;
 import com.example.pickup.R;
 import com.example.pickup.managers.ProfileManager;
 import com.example.pickup.models.EventParse;
@@ -23,6 +24,7 @@ public class ProfileFragment extends Fragment {
 
     private static final String TAG = "ProfileFragment";
 
+    Button btnSignout;
     EditText etFullname;
     EditText etUsername;
     EditText etTeam;
@@ -52,6 +54,15 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        btnSignout = view.findViewById(R.id.btnSignout);
+        btnSignout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ParseUser.logOut();
+                Navigation.goLoginActivity(getActivity());
+            }
+        });
 
         etFullname = view.findViewById(R.id.etFullname);
         etUsername = view.findViewById(R.id.etUsername);

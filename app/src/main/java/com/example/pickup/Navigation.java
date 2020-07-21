@@ -3,6 +3,8 @@ package com.example.pickup;
 import android.app.Activity;
 import android.content.Intent;
 
+import androidx.fragment.app.FragmentActivity;
+
 import com.example.pickup.activities.LoginActivity;
 import com.example.pickup.activities.MainActivity;
 import com.example.pickup.activities.PreviewComposeActivity;
@@ -31,9 +33,10 @@ public class Navigation {
         currentActivity.startActivity(i);
     }
 
-    public static void goLoginActivity(MainActivity currentActivity) {
+    public static void goLoginActivity(FragmentActivity currentActivity) {
         Intent i = new Intent(currentActivity, LoginActivity.class);
         currentActivity.startActivity(i);
+        currentActivity.finish();
     }
 
     public static void sleepApp(int seconds) {
@@ -43,4 +46,5 @@ public class Navigation {
             e.printStackTrace();
         }
     }
+
 }

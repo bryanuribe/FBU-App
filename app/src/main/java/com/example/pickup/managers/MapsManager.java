@@ -17,10 +17,13 @@ public class MapsManager {
 
     private static final String TAG = "MapsManager";
 
-    public static void queryAllPublicEvents(final GoogleMap googleMap) {
+    public static void populateGoogleMaps(final GoogleMap googleMap, String queryType) {
         // Specify which class to query
         ParseQuery<EventParse> query = ParseQuery.getQuery(EventParse.class);
         query.addDescendingOrder(EventParse.KEY_CREATED_AT);
+        if (queryType == "UserEvents") {
+            //query.whereEqualTo(ParseUser.getCurrentUser(), EventParse.getCreationUser());
+        }
         query.findInBackground(new FindCallback<EventParse>() {
             @Override
             public void done(List<EventParse> events, ParseException e) {

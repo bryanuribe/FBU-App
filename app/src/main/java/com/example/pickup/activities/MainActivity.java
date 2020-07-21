@@ -2,8 +2,6 @@ package com.example.pickup.activities;
 
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,9 +13,7 @@ import com.example.pickup.fragments.ComposeFragment;
 import com.example.pickup.fragments.EventsFragment;
 import com.example.pickup.fragments.MapsFragment;
 import com.example.pickup.fragments.ProfileFragment;
-import com.example.pickup.Navigation;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.parse.ParseUser;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,21 +21,11 @@ public class MainActivity extends AppCompatActivity {
 
     final FragmentManager fragmentManager = getSupportFragmentManager();
     private BottomNavigationView bottomNavigationView;
-    private Button btnSignout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        btnSignout = findViewById(R.id.btnSignout);
-        btnSignout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ParseUser.logOut();
-                Navigation.goLoginActivity(MainActivity.this);
-            }
-        });
 
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
 
