@@ -20,7 +20,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
     private Context context;
     private List<EventParse> events;
 
-    private static final String TAG = "PostsAdapter";
+    private static final String TAG = "EventsAdapter";
 
     public EventsAdapter(Context context, List<EventParse> events) {
         this.context = context;
