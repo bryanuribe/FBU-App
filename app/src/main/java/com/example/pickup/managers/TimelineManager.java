@@ -17,119 +17,37 @@ public class TimelineManager {
 
     private static final String TAG = "TimelineManager";
 
+    public static final String QUERY_TYPE_ALL = "all";
+    public static final String QUERY_TYPE_USER_SPECIFIC = "userSpecific";
 
-    public static void queryAllEvents(final TimelineAdapter adapter) {
-        // Specify which class to query
-        ParseQuery<ParseEvent> query = ParseQuery.getQuery(ParseEvent.class);
-        query.addDescendingOrder(ParseEvent.KEY_CREATED_AT);
-        query.findInBackground(new FindCallback<ParseEvent>() {
-            @Override
-            public void done(List<ParseEvent> events, ParseException e) {
-                if (e != null) {
-                    Log.e(TAG, "done: Issue getting posts", e);
-                    return;
-                }
-                for (ParseEvent event : events) {
-                    Log.i(TAG, "done: Event " + event.getTime() + ", Username " + event.getDate());
-                }
-                adapter.clear();
-                adapter.addAll(events);
-                adapter.notifyDataSetChanged();
-            }
-        });
-    }
+    public static final String AVAILABILITY_GOING = "Going";
+    public static final String AVAILABILITY_MAYBE = "Maybe";
+    public static final String AVAILABILITY_NO = "No";
+    public static final String AVAILABILITY_NA = "NA";
 
-    public static void queryGoingEvents(final TimelineAdapter adapter) {
+    public static void queryEvents(final TimelineAdapter adapter, String queryType, String availability) {
         // Specify which class to query
         ParseQuery<ParseUserToEvent> query = ParseQuery.getQuery(ParseUserToEvent.class);
         query.include(ParseUserToEvent.KEY_USER);
         query.include(ParseUserToEvent.KEY_EVENT);
         query.addDescendingOrder(ParseUserToEvent.KEY_CREATED_AT);
-        query.whereEqualTo(ParseUserToEvent.KEY_USER, ParseUser.getCurrentUser());
-        query.whereEqualTo(ParseUserToEvent.KEY_AVAILABILITY, "Going");
-        query.findInBackground(new FindCallback<ParseUserToEvent>() {
-            @Override
-            public void done(List<ParseUserToEvent> userToEvents, ParseException e) {
-                if (e != null) {
-                    Log.e(TAG, "done: Issue getting posts", e);
-                    return;
-                }
-                List<ParseEvent> events = new ArrayList<>();
-                for (ParseUserToEvent userToEvent : userToEvents) {
-                    Log.i(TAG, "done: " + userToEvent.getAvailability());
-                    ParseEvent event = userToEvent.getEvent();
-                    events.add(event);
-                }
-                adapter.clear();
-                adapter.addAll(events);
-                adapter.notifyDataSetChanged();
-            }
-        });
-    }
 
-    public static void queryMaybeEvents(final TimelineAdapter adapter) {
-        // Specify which class to query
-        ParseQuery<ParseUserToEvent> query = ParseQuery.getQuery(ParseUserToEvent.class);
-        query.include(ParseUserToEvent.KEY_USER);
-        query.include(ParseUserToEvent.KEY_EVENT);
-        query.addDescendingOrder(ParseUserToEvent.KEY_CREATED_AT);
-        query.whereEqualTo(ParseUserToEvent.KEY_USER, ParseUser.getCurrentUser());
-        query.whereEqualTo(ParseUserToEvent.KEY_AVAILABILITY, "Maybe");
-        query.findInBackground(new FindCallback<ParseUserToEvent>() {
-            @Override
-            public void done(List<ParseUserToEvent> userToEvents, ParseException e) {
-                if (e != null) {
-                    Log.e(TAG, "done: Issue getting posts", e);
-                    return;
-                }
-                List<ParseEvent> events = new ArrayList<>();
-                for (ParseUserToEvent userToEvent : userToEvents) {
-                    Log.i(TAG, "done: " + userToEvent.getAvailability());
-                    ParseEvent event = userToEvent.getEvent();
-                    events.add(event);
-                }
-                adapter.clear();
-                adapter.addAll(events);
-                adapter.notifyDataSetChanged();
-            }
-        });
-    }
+        if (queryType == QUERY_TYPE_ALL) {}
 
-    public static void queryNoEvents(final TimelineAdapter adapter) {
-        // Specify which class to query
-        ParseQuery<ParseUserToEvent> query = ParseQuery.getQuery(ParseUserToEvent.class);
-        query.include(ParseUserToEvent.KEY_USER);
-        query.include(ParseUserToEvent.KEY_EVENT);
-        query.addDescendingOrder(ParseUserToEvent.KEY_CREATED_AT);
-        query.whereEqualTo(ParseUserToEvent.KEY_USER, ParseUser.getCurrentUser());
-        query.whereEqualTo(ParseUserToEvent.KEY_AVAILABILITY, "No");
-        query.findInBackground(new FindCallback<ParseUserToEvent>() {
-            @Override
-            public void done(List<ParseUserToEvent> userToEvents, ParseException e) {
-                if (e != null) {
-                    Log.e(TAG, "done: Issue getting posts", e);
-                    return;
-                }
-                List<ParseEvent> events = new ArrayList<>();
-                for (ParseUserToEvent userToEvent : userToEvents) {
-                    Log.i(TAG, "done: " + userToEvent.getAvailability());
-                    ParseEvent event = userToEvent.getEvent();
-                    events.add(event);
-                }
-                adapter.clear();
-                adapter.addAll(events);
-                adapter.notifyDataSetChanged();
-            }
-        });
-    }
+        else if (queryType == QUERY_TYPE_USER_SPECIFIC) {
+            query.whereEqualTo(ParseUserToEvent.KEY_USER, ParseUser.getCurrentUser());
 
-    public static void queryYourEvents(final TimelineAdapter adapter) {
-        // Specify which class to query
-        ParseQuery<ParseUserToEvent> query = ParseQuery.getQuery(ParseUserToEvent.class);
-        query.include(ParseUserToEvent.KEY_USER);
-        query.include(ParseUserToEvent.KEY_EVENT);
-        query.addDescendingOrder(ParseUserToEvent.KEY_CREATED_AT);
-        query.whereEqualTo(ParseUserToEvent.KEY_USER, ParseUser.getCurrentUser());
+            if (availability == AVAILABILITY_GOING) {
+                query.whereEqualTo(ParseUserToEvent.KEY_AVAILABILITY, AVAILABILITY_GOING);
+            }
+            else if (availability == AVAILABILITY_MAYBE) {
+                query.whereEqualTo(ParseUserToEvent.KEY_AVAILABILITY, AVAILABILITY_MAYBE);
+            }
+            else if (availability == AVAILABILITY_NO) {
+                query.whereEqualTo(ParseUserToEvent.KEY_AVAILABILITY, AVAILABILITY_NO);
+            }
+        }
+
         query.findInBackground(new FindCallback<ParseUserToEvent>() {
             @Override
             public void done(List<ParseUserToEvent> userToEvents, ParseException e) {

@@ -21,9 +21,6 @@ public class MapsManager {
         // Specify which class to query
         ParseQuery<ParseEvent> query = ParseQuery.getQuery(ParseEvent.class);
         query.addDescendingOrder(ParseEvent.KEY_CREATED_AT);
-        if (queryType == "UserEvents") {
-            //query.whereEqualTo(ParseUser.getCurrentUser(), ParseEvent.getCreationUser());
-        }
         query.findInBackground(new FindCallback<ParseEvent>() {
             @Override
             public void done(List<ParseEvent> events, ParseException e) {

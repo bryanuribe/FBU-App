@@ -72,20 +72,20 @@ public class TimelineFragment extends Fragment {
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()) {
                     case 0:
-                        TimelineManager.queryAllEvents(adapter);
+                        TimelineManager.queryEvents(adapter, TimelineManager.QUERY_TYPE_ALL, TimelineManager.AVAILABILITY_NA);
                         break;
                     case 1:
-                        TimelineManager.queryGoingEvents(adapter);
+                        TimelineManager.queryEvents(adapter, TimelineManager.QUERY_TYPE_USER_SPECIFIC, TimelineManager.AVAILABILITY_GOING);
                         break;
                     case 2:
-                        TimelineManager.queryMaybeEvents(adapter);
+                        TimelineManager.queryEvents(adapter, TimelineManager.QUERY_TYPE_USER_SPECIFIC, TimelineManager.AVAILABILITY_MAYBE);
                         break;
                     case 3:
-                        TimelineManager.queryNoEvents(adapter);
+                        TimelineManager.queryEvents(adapter, TimelineManager.QUERY_TYPE_USER_SPECIFIC, TimelineManager.AVAILABILITY_NO);
                         break;
                     case 4:
                     default:
-                        TimelineManager.queryYourEvents(adapter);
+                        TimelineManager.queryEvents(adapter, TimelineManager.QUERY_TYPE_USER_SPECIFIC, TimelineManager.AVAILABILITY_NA);
                         break;
                 }
             }
@@ -96,6 +96,6 @@ public class TimelineFragment extends Fragment {
         });
 
         // Default value of tab layout
-        TimelineManager.queryAllEvents(adapter);
+        TimelineManager.queryEvents(adapter, TimelineManager.QUERY_TYPE_ALL, TimelineManager.AVAILABILITY_NA);
     }
 }
