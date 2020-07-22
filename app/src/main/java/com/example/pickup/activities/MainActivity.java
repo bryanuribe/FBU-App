@@ -10,7 +10,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.example.pickup.R;
 import com.example.pickup.fragments.ComposeFragment;
-import com.example.pickup.fragments.EventsFragment;
+import com.example.pickup.fragments.TimelineFragment;
 import com.example.pickup.fragments.MapsFragment;
 import com.example.pickup.fragments.ProfileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
                         fragment = new MapsFragment();
                         break;
                     case R.id.action_list:
-                        fragment = new EventsFragment();
+                        fragment = new TimelineFragment();
                         break;
                     case R.id.action_compose:
                         fragment = new ComposeFragment();

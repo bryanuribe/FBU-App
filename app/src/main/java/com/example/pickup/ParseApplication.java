@@ -2,7 +2,8 @@ package com.example.pickup;
 
 import android.app.Application;
 
-import com.example.pickup.models.EventParse;
+import com.example.pickup.models.ParseEvent;
+import com.example.pickup.models.ParseUserToEvent;
 import com.parse.Parse;
 import com.parse.ParseObject;
 
@@ -13,7 +14,8 @@ public class ParseApplication extends Application {
         super.onCreate();
 
         // Register your parse models
-        ParseObject.registerSubclass(EventParse.class);
+        ParseObject.registerSubclass(ParseEvent.class);
+        ParseObject.registerSubclass(ParseUserToEvent.class);
 
         // set applicationId, and server server based on the values in the Heroku settings.
         // clientKey is not needed unless explicitly configured

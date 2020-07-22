@@ -2,7 +2,7 @@ package com.example.pickup.managers;
 
 import android.util.Log;
 
-import com.example.pickup.models.EventParse;
+import com.example.pickup.models.ParseEvent;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -19,19 +19,19 @@ public class MapsManager {
 
     public static void populateGoogleMaps(final GoogleMap googleMap, String queryType) {
         // Specify which class to query
-        ParseQuery<EventParse> query = ParseQuery.getQuery(EventParse.class);
-        query.addDescendingOrder(EventParse.KEY_CREATED_AT);
+        ParseQuery<ParseEvent> query = ParseQuery.getQuery(ParseEvent.class);
+        query.addDescendingOrder(ParseEvent.KEY_CREATED_AT);
         if (queryType == "UserEvents") {
-            //query.whereEqualTo(ParseUser.getCurrentUser(), EventParse.getCreationUser());
+            //query.whereEqualTo(ParseUser.getCurrentUser(), ParseEvent.getCreationUser());
         }
-        query.findInBackground(new FindCallback<EventParse>() {
+        query.findInBackground(new FindCallback<ParseEvent>() {
             @Override
-            public void done(List<EventParse> events, ParseException e) {
+            public void done(List<ParseEvent> events, ParseException e) {
                 if (e != null) {
                     Log.e(TAG, "done: Issue getting posts", e);
                     return;
                 }
-                for (EventParse event : events) {
+                for (ParseEvent event : events) {
                     Log.i(TAG, "done: Event geopoint " + event.getGeopoint());
 
                     // Add event to map

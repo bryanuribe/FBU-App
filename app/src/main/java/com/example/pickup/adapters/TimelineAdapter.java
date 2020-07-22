@@ -11,18 +11,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pickup.R;
-import com.example.pickup.models.EventParse;
+import com.example.pickup.models.ParseEvent;
 
 import java.util.List;
 
-public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder>{
+public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHolder>{
 
     private Context context;
-    private List<EventParse> events;
+    private List<ParseEvent> events;
 
-    private static final String TAG = "EventsAdapter";
+    private static final String TAG = "TimelineAdapter";
 
-    public EventsAdapter(Context context, List<EventParse> events) {
+    public TimelineAdapter(Context context, List<ParseEvent> events) {
         this.context = context;
         this.events = events;
     }
@@ -36,7 +36,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        EventParse event = events.get(position);
+        ParseEvent event = events.get(position);
         holder.bind(event);
     }
 
@@ -52,7 +52,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
     }
 
     // Add a list of items -- change to type used
-    public void addAll(List<EventParse> list) {
+    public void addAll(List<ParseEvent> list) {
         events.addAll(list);
         notifyDataSetChanged();
     }
@@ -69,7 +69,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             itemView.setOnClickListener(this);
         }
 
-        public void bind(EventParse event) {
+        public void bind(ParseEvent event) {
             // Bind the post data to the view elements
             tvTime.setText(event.getTime());
         }

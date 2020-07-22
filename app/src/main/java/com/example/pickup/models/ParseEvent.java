@@ -5,7 +5,7 @@ import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 
 @ParseClassName("Event")
-public class EventParse extends ParseObject {
+public class ParseEvent extends ParseObject {
 
     public static final String KEY_DATE = "eventDate";
     public static final String KEY_TIME = "eventTime";
@@ -17,7 +17,7 @@ public class EventParse extends ParseObject {
 
 
     // no-arg, empty constructor required for Parceler
-    public EventParse() {}
+    public ParseEvent() {}
 
     // Getters
     public String getDate() {

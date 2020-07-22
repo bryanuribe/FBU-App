@@ -25,7 +25,7 @@ import androidx.fragment.app.Fragment;
 import com.example.pickup.Navigation;
 import com.example.pickup.R;
 import com.example.pickup.managers.ProfileManager;
-import com.example.pickup.models.EventParse;
+import com.example.pickup.models.ParseEvent;
 import com.parse.ParseUser;
 
 import java.io.File;
@@ -53,7 +53,7 @@ public class ProfileFragment extends Fragment {
     private File photoFile;
     public String photoFileName = "photo.jpg";
 
-    EventParse event;
+    ParseEvent event;
     ParseUser user;
 
     public ProfileFragment() {
@@ -107,17 +107,17 @@ public class ProfileFragment extends Fragment {
         etTeam = view.findViewById(R.id.etTeam);
         etBio = view.findViewById(R.id.etBio);
 
-        event = new EventParse();
+        event = new ParseEvent();
         user = ParseUser.getCurrentUser();
 
-        ProfileManager.setProfileFields(etUsername, etFullname, etTeam, etBio);
+        ProfileManager.setProfileFields(getContext(), ivProfilePic, etUsername, etFullname, etTeam, etBio);
 
         btnSave = view.findViewById(R.id.btnSave);
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Safe profile to database
-                ProfileManager.saveProfile(getContext(), user, etFullname, etUsername, etTeam, etBio);
+                ProfileManager.saveProfile(getContext(), user, photoFile, etFullname, etUsername, etTeam, etBio);
             }
         });
     }

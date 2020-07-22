@@ -9,7 +9,7 @@ import android.widget.Toast;
 import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.RequestParams;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
-import com.example.pickup.models.EventParse;
+import com.example.pickup.models.ParseEvent;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.SaveCallback;
@@ -91,7 +91,7 @@ public class ComposeManager {
                     Log.i(TAG, "onSuccess: formatted location " + formattedLocation[0]);
 
                     // Update fields
-                    EventParse newEvent = new EventParse();
+                    ParseEvent newEvent = new ParseEvent();
 
                     newEvent.setDate(date);
                     newEvent.setTime(time);
