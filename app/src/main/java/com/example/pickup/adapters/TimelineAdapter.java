@@ -45,6 +45,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        Log.i(TAG, "onBindViewHolder: " + position);
         ParseUserToEvent userToEvent = userToEvents.get(position);
         holder.bind(userToEvent);
     }
@@ -68,8 +69,9 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        private TextView tvTime;
         private TextView tvDate;
+        private TextView tvTime;
+        private TextView tvLocation;
         private TextView tvEventSport;
         private ImageButton btnAvailability;
         private String currentAvailability;
@@ -78,8 +80,9 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            tvTime = itemView.findViewById(R.id.tvEventTime);
             tvDate = itemView.findViewById(R.id.tvDate);
+            tvTime = itemView.findViewById(R.id.tvTime);
+            tvLocation = itemView.findViewById(R.id.tvLocation);
             tvEventSport = itemView.findViewById(R.id.tvEventSport);
             btnAvailability = itemView.findViewById(R.id.btnAvailability);
 
@@ -91,7 +94,6 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
             ParseEvent event = userToEvent.getEvent();
 
             // Bind the post data to the view elements
-            tvDate.setText(event.getDate());
             tvTime.setText(event.getTime());
             tvEventSport.setText(event.getSport());
 
@@ -106,6 +108,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
                     nextAvailability = getNextAvailability(currentAvailability);
                     setAvailability(btnAvailability, nextAvailability);
                     saveAvailability(userToEvent, currentAvailability);
+                    updateAvailability();
                 }
             });
         }
@@ -160,19 +163,18 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
         public void updateAvailability() {
             // TODO: Only if not your events or all events
             // TODO: Animate leaving item
-            userToEvents.remove(getAdapterPosition());
-            notifyDataSetChanged();
+            int adapterPosition = getAdapterPosition();
+            userToEvents.remove(adapterPosition);
+            notifyItemRemoved(adapterPosition);
         }
 
 
         @Override
         public void onClick(View view) {
-            // gets item position
-            int position = getAdapterPosition();
             // make sure the position is valid, i.e. actually exists in the view
-            if (position != RecyclerView.NO_POSITION) {
+            if (getAdapterPosition() != RecyclerView.NO_POSITION) {
                 // get the post at the position, this won't work if the class is static
-                Log.i(TAG, "onClick: " + position);
+                Log.i(TAG, "onClick: " + getAdapterPosition());
             }
         }
     }

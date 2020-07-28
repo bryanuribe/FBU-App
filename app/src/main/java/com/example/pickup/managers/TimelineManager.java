@@ -58,14 +58,18 @@ public class TimelineManager {
     }
 
     public static void populateTimeline(TimelineAdapter adapter, List<ParseUserToEvent> userToEvents, TextView tvTimelineStatus) {
+        setTimelineStatus(userToEvents, tvTimelineStatus);
+        adapter.clear();
+        adapter.addAll(userToEvents);
+        adapter.notifyDataSetChanged();
+    }
+
+    public static void setTimelineStatus(List<ParseUserToEvent> userToEvents, TextView tvTimelineStatus) {
         if (userToEvents.size() == 0) {
             tvTimelineStatus.setVisibility(View.VISIBLE);
         }
         else {
             tvTimelineStatus.setVisibility(View.INVISIBLE);
         }
-        adapter.clear();
-        adapter.addAll(userToEvents);
-        adapter.notifyDataSetChanged();
     }
 }

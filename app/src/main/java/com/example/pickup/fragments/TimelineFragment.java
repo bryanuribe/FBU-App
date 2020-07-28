@@ -9,10 +9,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.pickup.CountListener;
 import com.example.pickup.R;
 import com.example.pickup.adapters.TimelineAdapter;
 import com.example.pickup.managers.TimelineManager;
@@ -29,12 +31,22 @@ public class TimelineFragment extends Fragment {
 
     private static final String TAG = "TimelineFragment";
 
+    public static final String QUERY_ALL = "all";
+    public static final String QUERY_USER = "userSpecific";
+
+    public static final String AVAILABILITY_GOING = "Going";
+    public static final String AVAILABILITY_MAYBE = "Maybe";
+    public static final String AVAILABILITY_NO = "No";
+    public static final String AVAILABILITY_NA = "NA";
+
     private TabLayout tabLayout;
     private RecyclerView rvEvents;
     private SwipeRefreshLayout swipeContainer;
     private TextView tvTimelineStatus;
     protected TimelineAdapter adapter;
     protected List<ParseUserToEvent> userToEvents;
+
+    private CountListener countListener;
 
     public TimelineFragment() {
         // Required empty public constructor
@@ -67,6 +79,7 @@ public class TimelineFragment extends Fragment {
         // Create the data source
         // Set the adapter on the recycler view
         rvEvents.setAdapter(adapter);
+        rvEvents.setItemAnimator(new DefaultItemAnimator());
 
         // Set the layout manager on the recycler view
         rvEvents.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -77,23 +90,23 @@ public class TimelineFragment extends Fragment {
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()) {
                     case 0:
-                        userToEvents = TimelineManager.queryUserToEvents(TimelineManager.QUERY_ALL, TimelineManager.AVAILABILITY_NA);
+                        userToEvents = TimelineManager.queryUserToEvents(QUERY_ALL, AVAILABILITY_NA);
                         TimelineManager.populateTimeline(adapter, userToEvents, tvTimelineStatus);
                         break;
                     case 1:
-                        userToEvents = TimelineManager.queryUserToEvents(TimelineManager.QUERY_USER, TimelineManager.AVAILABILITY_GOING);
+                        userToEvents = TimelineManager.queryUserToEvents(QUERY_USER, AVAILABILITY_GOING);
                         TimelineManager.populateTimeline(adapter, userToEvents, tvTimelineStatus);
                         break;
                     case 2:
-                        userToEvents = TimelineManager.queryUserToEvents(TimelineManager.QUERY_USER, TimelineManager.AVAILABILITY_MAYBE);
+                        userToEvents = TimelineManager.queryUserToEvents(QUERY_USER, AVAILABILITY_MAYBE);
                         TimelineManager.populateTimeline(adapter, userToEvents, tvTimelineStatus);
                         break;
                     case 3:
-                        userToEvents = TimelineManager.queryUserToEvents(TimelineManager.QUERY_USER, TimelineManager.AVAILABILITY_NO);
+                        userToEvents = TimelineManager.queryUserToEvents(QUERY_USER, AVAILABILITY_NO);
                         TimelineManager.populateTimeline(adapter, userToEvents, tvTimelineStatus);
                         break;
                     case 4:
-                        userToEvents = TimelineManager.queryUserToEvents(TimelineManager.QUERY_USER, TimelineManager.AVAILABILITY_NA);
+                        userToEvents = TimelineManager.queryUserToEvents(QUERY_USER, AVAILABILITY_NA);
                         TimelineManager.populateTimeline(adapter, userToEvents, tvTimelineStatus);
                         break;
                 }
@@ -112,23 +125,23 @@ public class TimelineFragment extends Fragment {
             public void onRefresh() {
                 switch (tabLayout.getSelectedTabPosition()) {
                     case 0:
-                        userToEvents = TimelineManager.queryUserToEvents(TimelineManager.QUERY_ALL, TimelineManager.AVAILABILITY_NA);
+                        userToEvents = TimelineManager.queryUserToEvents(QUERY_ALL, AVAILABILITY_NA);
                         TimelineManager.populateTimeline(adapter, userToEvents, tvTimelineStatus);
                         break;
                     case 1:
-                        userToEvents = TimelineManager.queryUserToEvents(TimelineManager.QUERY_USER, TimelineManager.AVAILABILITY_GOING);
+                        userToEvents = TimelineManager.queryUserToEvents(QUERY_USER, AVAILABILITY_GOING);
                         TimelineManager.populateTimeline(adapter, userToEvents, tvTimelineStatus);
                         break;
                     case 2:
-                        userToEvents = TimelineManager.queryUserToEvents(TimelineManager.QUERY_USER, TimelineManager.AVAILABILITY_MAYBE);
+                        userToEvents = TimelineManager.queryUserToEvents(QUERY_USER, AVAILABILITY_MAYBE);
                         TimelineManager.populateTimeline(adapter, userToEvents, tvTimelineStatus);
                         break;
                     case 3:
-                        userToEvents = TimelineManager.queryUserToEvents(TimelineManager.QUERY_USER, TimelineManager.AVAILABILITY_NO);
+                        userToEvents = TimelineManager.queryUserToEvents(QUERY_USER, AVAILABILITY_NO);
                         TimelineManager.populateTimeline(adapter, userToEvents, tvTimelineStatus);
                         break;
                     case 4:
-                        userToEvents = TimelineManager.queryUserToEvents(TimelineManager.QUERY_USER, TimelineManager.AVAILABILITY_NA);
+                        userToEvents = TimelineManager.queryUserToEvents(QUERY_USER, AVAILABILITY_NA);
                         TimelineManager.populateTimeline(adapter, userToEvents, tvTimelineStatus);
                         break;
                 }
@@ -142,7 +155,7 @@ public class TimelineFragment extends Fragment {
                 android.R.color.holo_red_light);
 
         // Default value of tab layout
-        userToEvents = TimelineManager.queryUserToEvents(TimelineManager.QUERY_ALL, TimelineManager.AVAILABILITY_NA);
+        userToEvents = TimelineManager.queryUserToEvents(QUERY_ALL, AVAILABILITY_NA);
         TimelineManager.populateTimeline(adapter, userToEvents, tvTimelineStatus);
     }
 }
