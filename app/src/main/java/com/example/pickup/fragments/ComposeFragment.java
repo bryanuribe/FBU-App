@@ -99,10 +99,7 @@ public class ComposeFragment extends Fragment {
                     //TODO: Handle errors on any step
 
                     // Save event in database
-                    ComposeManager.saveEvent(getContext(), horizontalCalendar, etTime, radioBtnSport, etLocation, etNotes);
-
-                    // Clear text fields
-                    ComposeManager.resetFields(horizontalCalendar, etTime, radioBtnSoccer, etLocation, etNotes);
+                    ComposeManager.saveEvent(getContext(), horizontalCalendar, etTime, radioBtnSport, radioBtnSoccer, etLocation, etNotes);
 
                     // TODO: preview screen
                     //Navigation.goPreviewComposeScreen(getActivity());

@@ -29,7 +29,7 @@ public class ParseUserToEvent extends ParseObject {
     public void setUser(ParseUser user) {
         put(KEY_USER, user);
     }
-    public void setTime(ParseObject event) {
+    public void setEvent(ParseObject event) {
         put(KEY_EVENT, event);
     }
     public void setAvailability(String availability) {

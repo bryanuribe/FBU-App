@@ -1,11 +1,10 @@
 package com.example.pickup.managers;
 
-import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import com.example.pickup.adapters.TimelineAdapter;
-import com.example.pickup.models.ParseEvent;
 import com.example.pickup.models.ParseUserToEvent;
-import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -17,24 +16,27 @@ public class TimelineManager {
 
     private static final String TAG = "TimelineManager";
 
-    public static final String QUERY_TYPE_ALL = "all";
-    public static final String QUERY_TYPE_USER_SPECIFIC = "userSpecific";
+    public static final String QUERY_ALL = "all";
+    public static final String QUERY_USER = "userSpecific";
 
     public static final String AVAILABILITY_GOING = "Going";
     public static final String AVAILABILITY_MAYBE = "Maybe";
     public static final String AVAILABILITY_NO = "No";
     public static final String AVAILABILITY_NA = "NA";
 
-    public static void queryEvents(final TimelineAdapter adapter, String queryType, String availability) {
+    public static List<ParseUserToEvent> queryUserToEvents(String queryType, String availability) {
+
+        List<ParseUserToEvent> queryUserToEvents = new ArrayList<>();
+
         // Specify which class to query
-        ParseQuery<ParseUserToEvent> query = ParseQuery.getQuery(ParseUserToEvent.class);
+        final ParseQuery<ParseUserToEvent> query = ParseQuery.getQuery(ParseUserToEvent.class);
         query.include(ParseUserToEvent.KEY_USER);
         query.include(ParseUserToEvent.KEY_EVENT);
         query.addDescendingOrder(ParseUserToEvent.KEY_CREATED_AT);
 
-        if (queryType == QUERY_TYPE_ALL) {}
+        if (queryType == QUERY_ALL) {}
 
-        else if (queryType == QUERY_TYPE_USER_SPECIFIC) {
+        else if (queryType == QUERY_USER) {
             query.whereEqualTo(ParseUserToEvent.KEY_USER, ParseUser.getCurrentUser());
 
             if (availability == AVAILABILITY_GOING) {
@@ -47,24 +49,23 @@ public class TimelineManager {
                 query.whereEqualTo(ParseUserToEvent.KEY_AVAILABILITY, AVAILABILITY_NO);
             }
         }
+        try {
+            queryUserToEvents = query.find();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return queryUserToEvents;
+    }
 
-        query.findInBackground(new FindCallback<ParseUserToEvent>() {
-            @Override
-            public void done(List<ParseUserToEvent> userToEvents, ParseException e) {
-                if (e != null) {
-                    Log.e(TAG, "done: Issue getting posts", e);
-                    return;
-                }
-                List<ParseEvent> events = new ArrayList<>();
-                for (ParseUserToEvent userToEvent : userToEvents) {
-                    Log.i(TAG, "done: " + userToEvent.getAvailability());
-                    ParseEvent event = userToEvent.getEvent();
-                    events.add(event);
-                }
-                adapter.clear();
-                adapter.addAll(events);
-                adapter.notifyDataSetChanged();
-            }
-        });
+    public static void populateTimeline(TimelineAdapter adapter, List<ParseUserToEvent> userToEvents, TextView tvTimelineStatus) {
+        if (userToEvents.size() == 0) {
+            tvTimelineStatus.setVisibility(View.VISIBLE);
+        }
+        else {
+            tvTimelineStatus.setVisibility(View.INVISIBLE);
+        }
+        adapter.clear();
+        adapter.addAll(userToEvents);
+        adapter.notifyDataSetChanged();
     }
 }

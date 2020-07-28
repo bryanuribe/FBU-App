@@ -10,8 +10,10 @@ import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.RequestParams;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.pickup.models.ParseEvent;
+import com.example.pickup.models.ParseUserToEvent;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
+import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import org.json.JSONException;
@@ -42,7 +44,7 @@ public class ComposeManager {
         return true;
     }
 
-    public static void saveEvent(final Context currentContext, final HorizontalCalendar horizontalCalendar, final EditText etTime, RadioButton radioBtnSport, final EditText etLocation, final EditText etNotes) {
+    public static void saveEvent(final Context currentContext, final HorizontalCalendar horizontalCalendar, final EditText etTime, RadioButton radioBtnSport, RadioButton radioBtnSoccer, final EditText etLocation, final EditText etNotes) {
 
         // Get field from calendar
         final String year = String.valueOf(horizontalCalendar.getSelectedDate().get(Calendar.YEAR));
@@ -56,6 +58,8 @@ public class ComposeManager {
         // Get sport field
         final String sportSelected = radioBtnSport.getText().toString();
 
+        Log.i(TAG, "saveEvent: " + sportSelected);
+
         // Get notes field
         final String notes = etNotes.getText().toString();
 
@@ -63,7 +67,10 @@ public class ComposeManager {
         final String userInputLocation = etLocation.getText().toString();
         final String inputURL = formatUrl(userInputLocation);
 
+        Log.i(TAG, "saveEvent: " + inputURL);
+
         final String[] formattedLocation = new String[1];
+        final String[] informalLocation = new String[1];
         // [lat, lng]
         final double[] geopointLocation = new double[2];
 
@@ -91,7 +98,7 @@ public class ComposeManager {
                     Log.i(TAG, "onSuccess: formatted location " + formattedLocation[0]);
 
                     // Update fields
-                    ParseEvent newEvent = new ParseEvent();
+                    final ParseEvent newEvent = new ParseEvent();
 
                     newEvent.setDate(date);
                     newEvent.setTime(time);
@@ -107,6 +114,22 @@ public class ComposeManager {
                                 Log.e(TAG, "done: Error while saving", e);
                             }
                             Log.i(TAG, "done: Save event successful!");
+                        }
+                    });
+
+                    // Save in userToEvent
+                    ParseUserToEvent newUserToEvent = new ParseUserToEvent();
+                    newUserToEvent.setUser(ParseUser.getCurrentUser());
+                    newUserToEvent.setEvent(newEvent);
+
+                    newUserToEvent.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e != null) {
+                                Log.e(TAG, "done: Error while saving", e);
+                            }
+                            Log.i(TAG, "done: Save userToEvent successful!");
+
                             Toast.makeText(currentContext, "Event Created!", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -121,6 +144,9 @@ public class ComposeManager {
                 Log.i(TAG, "onFailure: Failure to get api response" + response + throwable);
             }
         });
+
+        // Clear text fields
+        ComposeManager.resetFields(horizontalCalendar, etTime, radioBtnSoccer, etLocation, etNotes);
     }
 
     private static String formatUrl(String userLocation) {
