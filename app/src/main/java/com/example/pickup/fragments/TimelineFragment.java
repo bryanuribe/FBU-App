@@ -1,24 +1,35 @@
 package com.example.pickup.fragments;
 
+import android.annotation.SuppressLint;
+import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.pickup.CountListener;
 import com.example.pickup.R;
 import com.example.pickup.adapters.TimelineAdapter;
+import com.example.pickup.dialogues.FilterDialogue;
 import com.example.pickup.managers.TimelineManager;
 import com.example.pickup.models.ParseUserToEvent;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -27,7 +38,7 @@ import java.util.List;
 /**
  * A simple Fragment subclass.
  */
-public class TimelineFragment extends Fragment {
+public class TimelineFragment extends Fragment implements FilterDialogue.FilterDialogueListener {
 
     private static final String TAG = "TimelineFragment";
 
@@ -39,14 +50,21 @@ public class TimelineFragment extends Fragment {
     public static final String AVAILABILITY_NO = "No";
     public static final String AVAILABILITY_NA = "NA";
 
+    private Button btnFilter;
     private TabLayout tabLayout;
     private RecyclerView rvEvents;
     private SwipeRefreshLayout swipeContainer;
     private TextView tvTimelineStatus;
+    private MutableLiveData<List<Pair<ParseUserToEvent, Integer>>> mutable;
+    private int filterDistance;
+    private String currentTab;
     protected TimelineAdapter adapter;
-    protected List<ParseUserToEvent> userToEvents;
+    protected List<Pair<ParseUserToEvent, Integer>> userToEvents;
 
-    private CountListener countListener;
+    // initializing FusedLocationProviderClient object
+    private FusedLocationProviderClient mFusedLocationClient;
+    private Location currentLocation;
+    private int PERMISSION_RESULT = 42;
 
     public TimelineFragment() {
         // Required empty public constructor
@@ -64,17 +82,68 @@ public class TimelineFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_timeline, container, false);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @SuppressLint("MissingPermission")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getContext());
+
+        // default values
+        filterDistance = 100;
+        currentTab = "ALL";
+
+        btnFilter = view.findViewById(R.id.btnFilter);
+        btnFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openFilterDialogue();
+            }
+        });
+
         rvEvents = view.findViewById(R.id.rvEvents);
         tvTimelineStatus = view.findViewById(R.id.tvTimelineStatus);
 
-        // Create layout for one row in list
         // Create the adapter
         userToEvents = new ArrayList<>();
         adapter = new TimelineAdapter(getContext(), userToEvents);
+
+        mutable = new MutableLiveData<>();
+        mutable.setValue(null);
+        mutable.observe(this, new Observer<List<Pair<ParseUserToEvent, Integer>>>() {
+            @Override
+            public void onChanged(List<Pair<ParseUserToEvent, Integer>> pairs) {
+                Log.i(TAG, "onChanged: o");
+                adapter.clear();
+                if (pairs != null) {
+                    adapter.addAll(pairs);
+                    adapter.notifyDataSetChanged();
+                    Log.i(TAG, "onChanged: item count " + adapter.getItemCount());
+                }
+            }
+        });
+
+        RecyclerView.AdapterDataObserver dataObserver = new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                Log.i(TAG, "onChanged: " + "change");
+                TimelineManager.setTimelineStatus(adapter, tvTimelineStatus);
+            }
+
+            @Override
+            public void onItemRangeRemoved(int positionStart, int itemCount) {
+                super.onItemRangeRemoved(positionStart, itemCount);
+                Log.i(TAG, "onItemRangeRemoved: " + userToEvents.size());
+                Log.i(TAG, "onItemRangeRemoved: " + adapter.getItemCount());
+                if (positionStart == 0 && itemCount == 1) {
+                    TimelineManager.setTimelineStatus(adapter, tvTimelineStatus);
+                }
+            }
+        };
+
+        adapter.registerAdapterDataObserver(dataObserver);
 
         // Create the data source
         // Set the adapter on the recycler view
@@ -85,31 +154,30 @@ public class TimelineFragment extends Fragment {
         rvEvents.setLayoutManager(new LinearLayoutManager(getContext()));
 
         tabLayout = view.findViewById(R.id.tabLayout);
+
         tabLayout.addOnTabSelectedListener(new TabLayout.BaseOnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()) {
                     case 0:
-                        userToEvents = TimelineManager.queryUserToEvents(QUERY_ALL, AVAILABILITY_NA);
-                        TimelineManager.populateTimeline(adapter, userToEvents, tvTimelineStatus);
+                    default:
+                        currentTab = "ALL";
                         break;
                     case 1:
-                        userToEvents = TimelineManager.queryUserToEvents(QUERY_USER, AVAILABILITY_GOING);
-                        TimelineManager.populateTimeline(adapter, userToEvents, tvTimelineStatus);
+                        currentTab = "GOING";
                         break;
                     case 2:
-                        userToEvents = TimelineManager.queryUserToEvents(QUERY_USER, AVAILABILITY_MAYBE);
-                        TimelineManager.populateTimeline(adapter, userToEvents, tvTimelineStatus);
+                        currentTab = "MAYBE";
                         break;
                     case 3:
-                        userToEvents = TimelineManager.queryUserToEvents(QUERY_USER, AVAILABILITY_NO);
-                        TimelineManager.populateTimeline(adapter, userToEvents, tvTimelineStatus);
+                        currentTab = "NO";
                         break;
                     case 4:
-                        userToEvents = TimelineManager.queryUserToEvents(QUERY_USER, AVAILABILITY_NA);
-                        TimelineManager.populateTimeline(adapter, userToEvents, tvTimelineStatus);
+                        currentTab = "YOUR EVENTS";
                         break;
                 }
+                Log.i(TAG, "onTabSelected: " + currentTab);
+                TimelineManager.updateUserToEvents(getContext(), mFusedLocationClient, mutable, currentTab, filterDistance);
             }
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {}
@@ -123,28 +191,7 @@ public class TimelineFragment extends Fragment {
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                switch (tabLayout.getSelectedTabPosition()) {
-                    case 0:
-                        userToEvents = TimelineManager.queryUserToEvents(QUERY_ALL, AVAILABILITY_NA);
-                        TimelineManager.populateTimeline(adapter, userToEvents, tvTimelineStatus);
-                        break;
-                    case 1:
-                        userToEvents = TimelineManager.queryUserToEvents(QUERY_USER, AVAILABILITY_GOING);
-                        TimelineManager.populateTimeline(adapter, userToEvents, tvTimelineStatus);
-                        break;
-                    case 2:
-                        userToEvents = TimelineManager.queryUserToEvents(QUERY_USER, AVAILABILITY_MAYBE);
-                        TimelineManager.populateTimeline(adapter, userToEvents, tvTimelineStatus);
-                        break;
-                    case 3:
-                        userToEvents = TimelineManager.queryUserToEvents(QUERY_USER, AVAILABILITY_NO);
-                        TimelineManager.populateTimeline(adapter, userToEvents, tvTimelineStatus);
-                        break;
-                    case 4:
-                        userToEvents = TimelineManager.queryUserToEvents(QUERY_USER, AVAILABILITY_NA);
-                        TimelineManager.populateTimeline(adapter, userToEvents, tvTimelineStatus);
-                        break;
-                }
+                TimelineManager.updateUserToEvents(getContext(), mFusedLocationClient, mutable, currentTab, filterDistance);
                 swipeContainer.setRefreshing(false);
             }
         });
@@ -154,8 +201,24 @@ public class TimelineFragment extends Fragment {
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
-        // Default value of tab layout
-        userToEvents = TimelineManager.queryUserToEvents(QUERY_ALL, AVAILABILITY_NA);
-        TimelineManager.populateTimeline(adapter, userToEvents, tvTimelineStatus);
+        TimelineManager.updateUserToEvents(getContext(), mFusedLocationClient, mutable, currentTab, filterDistance);
+    }
+
+    private void openFilterDialogue() {
+        FilterDialogue filterDialogue = new FilterDialogue(filterDistance);
+        filterDialogue.setTargetFragment(this, 0);
+        filterDialogue.show(getActivity().getSupportFragmentManager(), "Filter Dialogue");
+    }
+
+    @Override
+    public void onDialogPositiveClick(FilterDialogue dialog, int distance) {
+        Log.i(TAG, "onDialogPositiveClick: " + distance);
+        filterDistance = distance;
+        TimelineManager.updateUserToEvents(getContext(), mFusedLocationClient, mutable, currentTab, filterDistance);
+    }
+
+    @Override
+    public void onDialogNegativeClick(FilterDialogue dialog) {
+
     }
 }

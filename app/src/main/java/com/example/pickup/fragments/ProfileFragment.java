@@ -22,7 +22,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
-import com.example.pickup.Navigation;
+import com.example.pickup.managers.Navigation;
 import com.example.pickup.R;
 import com.example.pickup.managers.ProfileManager;
 import com.example.pickup.models.ParseEvent;

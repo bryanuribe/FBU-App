@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.util.Log;
 import android.widget.EditText;
 
-import com.example.pickup.Navigation;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
@@ -39,7 +38,7 @@ public class SignupManager {
                 } else {
                     // Sign up didn't succeed. Look at the ParseException
                     // to figure out what went wrong
-                    Log.i(TAG, "done: Signup failed");
+                    Log.i(TAG, "done: Sign up failed");
                 }
             }
         });

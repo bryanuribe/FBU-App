@@ -34,7 +34,8 @@ public class MapsManager {
                     // Add event to map
                     ParseGeoPoint geopoint = event.getGeopoint();
                     LatLng eventLocation = new LatLng(geopoint.getLatitude(), geopoint.getLongitude());
-                    googleMap.addMarker(new MarkerOptions().position(eventLocation).title("Event"));
+                    MarkerOptions marker = new MarkerOptions().position(eventLocation).title(event.getSport());
+                    googleMap.addMarker(marker);
                 }
             }
         });

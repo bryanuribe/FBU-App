@@ -5,7 +5,6 @@ import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.pickup.Navigation;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;

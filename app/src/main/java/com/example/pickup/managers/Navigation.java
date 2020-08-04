@@ -1,4 +1,4 @@
-package com.example.pickup;
+package com.example.pickup.managers;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -26,7 +26,6 @@ public class Navigation {
         Intent i = new Intent(currentActivity, SignupActivity.class);
         currentActivity.startActivity(i);
     }
-
 
     public static void goPreviewComposeScreen(Activity currentActivity) {
         Intent i = new Intent(currentActivity, PreviewComposeActivity.class);

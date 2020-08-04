@@ -78,7 +78,9 @@ public class ProfileManager {
         String bio = etBio.getText().toString();
 
         // Update fields
-        user.put(KEY_PROFILE_PICTURE, new ParseFile(photoFile));
+        if (photoFile != null) {
+            user.put(KEY_PROFILE_PICTURE, new ParseFile(photoFile));
+        }
         user.put(KEY_USERNAME, username);
         user.put(KEY_FULLNAME, fullname);
         user.put(KEY_TEAM, team);

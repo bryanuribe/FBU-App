@@ -10,6 +10,7 @@ public class ParseUserToEvent extends ParseObject {
     public static final String KEY_USER = "user";
     public static final String KEY_EVENT = "event";
     public static final String KEY_AVAILABILITY = "availability";
+    public static final String KEY_DISTANCE = "distance";
 
     // no-arg, empty constructor required for Parceler
     public ParseUserToEvent() {}

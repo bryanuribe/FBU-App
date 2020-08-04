@@ -3,6 +3,7 @@ package com.example.pickup.adapters;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +24,7 @@ import java.util.List;
 public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHolder>{
 
     private Context context;
-    private List<ParseUserToEvent> userToEvents;
+    private List<Pair<ParseUserToEvent, Integer>> userToEvents;
 
     private static final String TAG = "TimelineAdapter";
     public static final String AVAILABILITY_GOING = "Going";
@@ -31,7 +32,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
     public static final String AVAILABILITY_NO = "No";
     public static final String AVAILABILITY_NOT_SPECIFIED = "Not Specified";
 
-    public TimelineAdapter(Context context, List<ParseUserToEvent> userToEvents) {
+    public TimelineAdapter(Context context, List<Pair<ParseUserToEvent, Integer>> userToEvents) {
         this.context = context;
         this.userToEvents = userToEvents;
     }
@@ -46,7 +47,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Log.i(TAG, "onBindViewHolder: " + position);
-        ParseUserToEvent userToEvent = userToEvents.get(position);
+        Pair<ParseUserToEvent, Integer> userToEvent = userToEvents.get(position);
         holder.bind(userToEvent);
     }
 
@@ -62,7 +63,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
     }
 
     // Add a list of items -- change to type used
-    public void addAll(List<ParseUserToEvent> list) {
+    public void addAll(List<Pair<ParseUserToEvent, Integer>> list) {
         userToEvents.addAll(list);
         notifyDataSetChanged();
     }
@@ -72,6 +73,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
         private TextView tvDate;
         private TextView tvTime;
         private TextView tvLocation;
+        private TextView tvDistance;
         private TextView tvEventSport;
         private ImageButton btnAvailability;
         private String currentAvailability;
@@ -85,17 +87,20 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
             tvLocation = itemView.findViewById(R.id.tvLocation);
             tvEventSport = itemView.findViewById(R.id.tvEventSport);
             btnAvailability = itemView.findViewById(R.id.btnAvailability);
+            tvDistance = itemView.findViewById(R.id.tvDistance);
 
             itemView.setOnClickListener(this);
         }
 
-        public void bind(final ParseUserToEvent userToEvent) {
+        public void bind(final Pair<ParseUserToEvent, Integer> userToEventDistancePair) {
 
+            final ParseUserToEvent userToEvent = userToEventDistancePair.first;
             ParseEvent event = userToEvent.getEvent();
 
             // Bind the post data to the view elements
             tvTime.setText(event.getTime());
             tvEventSport.setText(event.getSport());
+            tvDistance.setText(userToEventDistancePair.second.toString() + " miles away");
 
             currentAvailability = userToEvent.getAvailability();
 
@@ -167,7 +172,6 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
             userToEvents.remove(adapterPosition);
             notifyItemRemoved(adapterPosition);
         }
-
 
         @Override
         public void onClick(View view) {

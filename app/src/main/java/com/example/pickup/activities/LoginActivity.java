@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.pickup.R;
 import com.example.pickup.managers.LoginManager;
-import com.example.pickup.Navigation;
+import com.example.pickup.managers.Navigation;
 
 public class LoginActivity extends AppCompatActivity {
 
