@@ -12,6 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.pickup.adapters.TimelineAdapter;
+import com.example.pickup.enums.Availability;
+import com.example.pickup.enums.QueryType;
+import com.example.pickup.enums.TimelineTab;
 import com.example.pickup.models.ParseUserToEvent;
 import com.example.pickup.queryUserToEvents.NotifyChangeUserToEvents;
 import com.example.pickup.queryUserToEvents.QueryUserToEvents;
@@ -29,21 +32,13 @@ public class TimelineManager {
 
     private static final String TAG = "TimelineManager";
 
-    public static final String QUERY_ALL = "all";
-    public static final String QUERY_USER = "userSpecific";
-
-    public static final String AVAILABILITY_GOING = "Going";
-    public static final String AVAILABILITY_MAYBE = "Maybe";
-    public static final String AVAILABILITY_NO = "No";
-    public static final String AVAILABILITY_NA = "NA";
-
     @SuppressLint("MissingPermission")
-    public static void updateUserToEvents(final Context currentContext, final FusedLocationProviderClient mFusedLocationClient, final MutableLiveData<List<Pair<ParseUserToEvent, Integer>>> mutable, final String currentTab, final Integer filterDistance) {
+    public static void updateUserToEvents(final Context currentContext, final FusedLocationProviderClient mFusedLocationClient, final MutableLiveData<List<Pair<ParseUserToEvent, Integer>>> mutable, final TimelineTab currentTab, final Integer filterDistance) {
 
-        String[] queryParameters = getQueryParameters(currentTab);
+        Object[] queryParameters = getQueryParameters(currentTab);
 
-        final String queryType = queryParameters[0];
-        final String availability = queryParameters[1];
+        final QueryType queryType = (QueryType) queryParameters[0];
+        final Availability availability = (Availability) queryParameters[1];
 
         mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
             @Override
@@ -66,17 +61,31 @@ public class TimelineManager {
     }
 
     public static List<Pair<ParseUserToEvent, Integer>> filterUserToEvents(List<Pair<ParseUserToEvent, Integer>> userToEvents, final int filterDistance) {
-        Pair<ParseUserToEvent, Integer> lastPair = userToEvents.get(userToEvents.size() -1);
-        Log.i(TAG, "filterUserToEvents: " + lastPair.second.toString());
-        Integer distance =  lastPair.second;
 
-        while (distance > filterDistance) {
-            lastPair = userToEvents.get(userToEvents.size() -2);
-            distance = lastPair.second;
-            userToEvents.remove(userToEvents.size() -1);
+        int currentIndex = userToEvents.size() -1;
+        if (currentIndex == -1) {
+            return userToEvents;
         }
-
-        return userToEvents;
+        else {
+            Pair<ParseUserToEvent, Integer> lastPair = userToEvents.get(currentIndex);
+            Integer distance =  lastPair.second;
+            Log.i(TAG, "filterUserToEvents: " + distance);
+            while (distance > filterDistance) {
+                userToEvents.remove(currentIndex);
+                Log.i(TAG, "filterUserToEvents: " + currentIndex);
+                --currentIndex;
+                Log.i(TAG, "filterUserToEvents: " + currentIndex);
+                if (currentIndex == -1){
+                    break;
+                }
+                else {
+                    lastPair = userToEvents.get(currentIndex);
+                    distance = lastPair.second;
+                }
+            }
+            Log.i(TAG, "filterUserToEvents: " + userToEvents.size());
+            return userToEvents;
+        }
     }
 
     public static void setTimelineStatus(TimelineAdapter adapter, TextView tvTimelineStatus) {
@@ -90,27 +99,27 @@ public class TimelineManager {
         }
     }
 
-    private static String[] getQueryParameters(String currentTab) {
-        String queryParameters[] = new String[2];
-        if (currentTab.equals("ALL")) {
-            queryParameters[0] = QUERY_ALL;
-            queryParameters[1] = AVAILABILITY_NA;
+    private static Object[] getQueryParameters(TimelineTab currentTab) {
+        Object queryParameters[] = new Object[2];
+        if (currentTab == TimelineTab.ALL) {
+            queryParameters[0] = QueryType.ALL;
+            queryParameters[1] = Availability.NA;
         }
-        else if (currentTab.equals("GOING")) {
-            queryParameters[0] = QUERY_USER;
-            queryParameters[1] = AVAILABILITY_GOING;
+        else if (currentTab == TimelineTab.GOING) {
+            queryParameters[0] = QueryType.USER;
+            queryParameters[1] = Availability.GOING;
         }
-        else if (currentTab.equals("MAYBE")) {
-            queryParameters[0] = QUERY_USER;
-            queryParameters[1] = AVAILABILITY_MAYBE;
+        else if (currentTab == TimelineTab.MAYBE) {
+            queryParameters[0] = QueryType.USER;
+            queryParameters[1] = Availability.MAYBE;
         }
-        else if (currentTab.equals("NO")) {
-            queryParameters[0] = QUERY_USER;
-            queryParameters[1] = AVAILABILITY_NO;
+        else if (currentTab == TimelineTab.NO) {
+            queryParameters[0] = QueryType.USER;
+            queryParameters[1] = Availability.NO;
         }
         else {
-            queryParameters[0] = QUERY_USER;
-            queryParameters[1] = AVAILABILITY_NA;
+            queryParameters[0] = QueryType.USER;
+            queryParameters[1] = Availability.NA;
         }
 
         return queryParameters;

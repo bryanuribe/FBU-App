@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.pickup.dialogues.MarkerDialogue;
 import com.example.pickup.R;
 import com.example.pickup.managers.MapsManager;
 import com.example.pickup.managers.UserManager;
@@ -33,7 +34,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
-public class MapsFragment extends Fragment {
+public class MapsFragment extends Fragment implements MarkerDialogue.MarkerDialogueListener {
 
     private static final String TAG = "MapsFragment";
     public static final String apiKey = "AIzaSyDAqSxvNJg6ricJ-kNRgkrqqOuvW8cf5z4";
@@ -74,6 +75,7 @@ public class MapsFragment extends Fragment {
                 @Override
                 public void onInfoWindowClick(Marker marker) {
                     Log.i(TAG, "onInfoWindowClick: "  + marker.getTitle());
+                    openMarkerDialogue();
                 }
             });
 
@@ -83,6 +85,11 @@ public class MapsFragment extends Fragment {
             //getLastLocation();
         }
     };
+
+    private void openMarkerDialogue() {
+        MarkerDialogue markerDialogue = new MarkerDialogue();
+        markerDialogue.show(getActivity().getSupportFragmentManager(), "Marker Dialogue");
+    }
 
     @Nullable
     @Override
@@ -161,6 +168,11 @@ public class MapsFragment extends Fragment {
         if (userManager.checkPermissions(getContext())) {
             //getLastLocation();
         }
+    }
+
+    @Override
+    public void applyUserAction() {
+        Log.i(TAG, "applyUserAction: ");
     }
 }
 

@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pickup.R;
+import com.example.pickup.enums.Availability;
 import com.example.pickup.models.ParseEvent;
 import com.example.pickup.models.ParseUserToEvent;
 import com.parse.ParseException;
@@ -46,7 +47,6 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Log.i(TAG, "onBindViewHolder: " + position);
         Pair<ParseUserToEvent, Integer> userToEvent = userToEvents.get(position);
         holder.bind(userToEvent);
     }
@@ -76,8 +76,8 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
         private TextView tvDistance;
         private TextView tvEventSport;
         private ImageButton btnAvailability;
-        private String currentAvailability;
-        private String nextAvailability;
+        private Availability currentAvailability;
+        private Availability nextAvailability;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -102,7 +102,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
             tvEventSport.setText(event.getSport());
             tvDistance.setText(userToEventDistancePair.second.toString() + " miles away");
 
-            currentAvailability = userToEvent.getAvailability();
+            currentAvailability = getCurrentAvailability(userToEvent.getAvailability());
 
             setAvailability(btnAvailability, currentAvailability);
 
@@ -112,43 +112,58 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
                 public void onClick(View view) {
                     nextAvailability = getNextAvailability(currentAvailability);
                     setAvailability(btnAvailability, nextAvailability);
-                    saveAvailability(userToEvent, currentAvailability);
+                    saveAvailability(userToEvent, currentAvailability.text());
                     updateAvailability();
                 }
             });
         }
 
-        private String getNextAvailability(String currentAvailability) {
-            if (currentAvailability.equals(AVAILABILITY_NOT_SPECIFIED)) {
-                return AVAILABILITY_GOING;
+        private Availability getCurrentAvailability(String availability) {
+            if (availability.equals("Going")) {
+                return Availability.GOING;
             }
-            else if (currentAvailability.equals(AVAILABILITY_GOING)) {
-                return AVAILABILITY_MAYBE;
+            else if (availability.equals("Maybe")) {
+                return Availability.MAYBE;
             }
-            else if (currentAvailability.equals(AVAILABILITY_MAYBE)){
-                return AVAILABILITY_NO;
+            else if (availability.equals("No")){
+                return Availability.NO;
             }
             else {
-                return AVAILABILITY_GOING;
+                return Availability.NA;
             }
         }
 
-        private void setAvailability(ImageButton btnAvailability, String nextAvailability) {
-            if (nextAvailability.equals(AVAILABILITY_NOT_SPECIFIED)) {
+        private Availability getNextAvailability(Availability availability) {
+            if (availability == Availability.GOING) {
+                return Availability.MAYBE;
+            }
+            else if (availability == Availability.MAYBE) {
+                return Availability.NO;
+            }
+            else if (availability == Availability.NO){
+                return Availability.GOING;
+            }
+            else {
+                return Availability.GOING;
+            }
+        }
+
+        private void setAvailability(ImageButton btnAvailability, Availability nextAvailability) {
+            if (nextAvailability == Availability.NA) {
                 btnAvailability.setBackground(context.getDrawable(R.drawable.button_not_specified));
-                currentAvailability = AVAILABILITY_NOT_SPECIFIED;
+                currentAvailability = Availability.NA;
             }
-            else if (nextAvailability.equals(AVAILABILITY_GOING)) {
+            else if (nextAvailability == Availability.GOING) {
                 btnAvailability.setBackground(context.getDrawable(R.drawable.button_going));
-                currentAvailability = AVAILABILITY_GOING;
+                currentAvailability = Availability.GOING;
             }
-            else if (nextAvailability.equals(AVAILABILITY_MAYBE)){
+            else if (nextAvailability == Availability.MAYBE){
                 btnAvailability.setBackground(context.getDrawable(R.drawable.button_maybe));
-                currentAvailability = AVAILABILITY_MAYBE;
+                currentAvailability = Availability.MAYBE;
             }
             else {
                 btnAvailability.setBackground(context.getDrawable(R.drawable.button_no));
-                currentAvailability = AVAILABILITY_NO;
+                currentAvailability = Availability.NO;
             }
         }
 

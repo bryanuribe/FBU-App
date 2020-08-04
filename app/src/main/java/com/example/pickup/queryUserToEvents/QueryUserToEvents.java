@@ -3,6 +3,8 @@ package com.example.pickup.queryUserToEvents;
 import android.location.Location;
 import android.util.Pair;
 
+import com.example.pickup.enums.Availability;
+import com.example.pickup.enums.QueryType;
 import com.example.pickup.models.ParseUserToEvent;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
@@ -19,19 +21,11 @@ public class QueryUserToEvents implements Callable<List<Pair<ParseUserToEvent, I
 
     private static final String TAG = "QueryUserToEvents";
 
-    public static final String QUERY_ALL = "all";
-    public static final String QUERY_USER = "userSpecific";
-
-    public static final String AVAILABILITY_GOING = "Going";
-    public static final String AVAILABILITY_MAYBE = "Maybe";
-    public static final String AVAILABILITY_NO = "No";
-    public static final String AVAILABILITY_NA = "NA";
-
-    private String queryType;
-    private String availability;
+    private QueryType queryType;
+    private Availability availability;
     private Location userLocation;
 
-    public QueryUserToEvents(String queryType, String availability, Location userLocation) {
+    public QueryUserToEvents(QueryType queryType, Availability availability, Location userLocation) {
         this.queryType = queryType;
         this.availability = availability;
         this.userLocation = userLocation;
@@ -45,19 +39,14 @@ public class QueryUserToEvents implements Callable<List<Pair<ParseUserToEvent, I
         final ParseQuery<ParseUserToEvent> query = ParseQuery.getQuery(ParseUserToEvent.class);
         query.include(ParseUserToEvent.KEY_USER);
         query.include(ParseUserToEvent.KEY_EVENT);
-        if (queryType == QUERY_ALL) {}
 
-        else if (queryType == QUERY_USER) {
+        if (queryType == QueryType.ALL) {
+        }
+
+        else if (queryType == QueryType.USER) {
             query.whereEqualTo(ParseUserToEvent.KEY_USER, ParseUser.getCurrentUser());
-
-            if (availability == AVAILABILITY_GOING) {
-                query.whereEqualTo(ParseUserToEvent.KEY_AVAILABILITY, AVAILABILITY_GOING);
-            }
-            else if (availability == AVAILABILITY_MAYBE) {
-                query.whereEqualTo(ParseUserToEvent.KEY_AVAILABILITY, AVAILABILITY_MAYBE);
-            }
-            else if (availability == AVAILABILITY_NO) {
-                query.whereEqualTo(ParseUserToEvent.KEY_AVAILABILITY, AVAILABILITY_NO);
+            if (availability != Availability.NA) {
+                query.whereEqualTo(ParseUserToEvent.KEY_AVAILABILITY, availability.text());
             }
         }
 

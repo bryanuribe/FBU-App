@@ -26,6 +26,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.pickup.R;
 import com.example.pickup.adapters.TimelineAdapter;
 import com.example.pickup.dialogues.FilterDialogue;
+import com.example.pickup.enums.TimelineTab;
 import com.example.pickup.managers.TimelineManager;
 import com.example.pickup.models.ParseUserToEvent;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -42,14 +43,6 @@ public class TimelineFragment extends Fragment implements FilterDialogue.FilterD
 
     private static final String TAG = "TimelineFragment";
 
-    public static final String QUERY_ALL = "all";
-    public static final String QUERY_USER = "userSpecific";
-
-    public static final String AVAILABILITY_GOING = "Going";
-    public static final String AVAILABILITY_MAYBE = "Maybe";
-    public static final String AVAILABILITY_NO = "No";
-    public static final String AVAILABILITY_NA = "NA";
-
     private Button btnFilter;
     private TabLayout tabLayout;
     private RecyclerView rvEvents;
@@ -57,7 +50,7 @@ public class TimelineFragment extends Fragment implements FilterDialogue.FilterD
     private TextView tvTimelineStatus;
     private MutableLiveData<List<Pair<ParseUserToEvent, Integer>>> mutable;
     private int filterDistance;
-    private String currentTab;
+    private TimelineTab currentTab;
     protected TimelineAdapter adapter;
     protected List<Pair<ParseUserToEvent, Integer>> userToEvents;
 
@@ -92,7 +85,7 @@ public class TimelineFragment extends Fragment implements FilterDialogue.FilterD
 
         // default values
         filterDistance = 100;
-        currentTab = "ALL";
+        currentTab = TimelineTab.ALL;
 
         btnFilter = view.findViewById(R.id.btnFilter);
         btnFilter.setOnClickListener(new View.OnClickListener() {
@@ -114,12 +107,10 @@ public class TimelineFragment extends Fragment implements FilterDialogue.FilterD
         mutable.observe(this, new Observer<List<Pair<ParseUserToEvent, Integer>>>() {
             @Override
             public void onChanged(List<Pair<ParseUserToEvent, Integer>> pairs) {
-                Log.i(TAG, "onChanged: o");
                 adapter.clear();
                 if (pairs != null) {
                     adapter.addAll(pairs);
                     adapter.notifyDataSetChanged();
-                    Log.i(TAG, "onChanged: item count " + adapter.getItemCount());
                 }
             }
         });
@@ -128,15 +119,12 @@ public class TimelineFragment extends Fragment implements FilterDialogue.FilterD
             @Override
             public void onChanged() {
                 super.onChanged();
-                Log.i(TAG, "onChanged: " + "change");
                 TimelineManager.setTimelineStatus(adapter, tvTimelineStatus);
             }
 
             @Override
             public void onItemRangeRemoved(int positionStart, int itemCount) {
                 super.onItemRangeRemoved(positionStart, itemCount);
-                Log.i(TAG, "onItemRangeRemoved: " + userToEvents.size());
-                Log.i(TAG, "onItemRangeRemoved: " + adapter.getItemCount());
                 if (positionStart == 0 && itemCount == 1) {
                     TimelineManager.setTimelineStatus(adapter, tvTimelineStatus);
                 }
@@ -161,19 +149,19 @@ public class TimelineFragment extends Fragment implements FilterDialogue.FilterD
                 switch (tab.getPosition()) {
                     case 0:
                     default:
-                        currentTab = "ALL";
+                        currentTab = TimelineTab.ALL;
                         break;
                     case 1:
-                        currentTab = "GOING";
+                        currentTab = TimelineTab.GOING;
                         break;
                     case 2:
-                        currentTab = "MAYBE";
+                        currentTab = TimelineTab.MAYBE;
                         break;
                     case 3:
-                        currentTab = "NO";
+                        currentTab = TimelineTab.NO;
                         break;
                     case 4:
-                        currentTab = "YOUR EVENTS";
+                        currentTab = TimelineTab.YOUR_EVENTS;
                         break;
                 }
                 Log.i(TAG, "onTabSelected: " + currentTab);
