@@ -4,7 +4,10 @@ import com.parse.ParseClassName;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
+import org.parceler.Parcel;
+
 @ParseClassName("UserToEvent")
+@Parcel(analyze={ParseUserToEvent.class})
 public class ParseUserToEvent extends ParseObject {
 
     public static final String KEY_USER = "user";

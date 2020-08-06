@@ -14,10 +14,16 @@ import androidx.core.view.GestureDetectorCompat;
 
 import com.example.pickup.R;
 import com.example.pickup.enums.Direction;
+import com.example.pickup.models.ParseUserToEvent;
+
+import org.parceler.Parcels;
 
 public class MarkerPopupWindow extends Activity {
 
     private static final String TAG = "MarkerPopupWindow";
+
+    private ParseUserToEvent userToEvent;
+    private int eventDistance;
 
     private MarkerDialogueListener listener;
     private GestureDetectorCompat gestureDetector;
@@ -40,11 +46,10 @@ public class MarkerPopupWindow extends Activity {
 
         getWindow().setLayout((int) (width *.6), (int) (height *.4));
 
-        float mCurrentX = getWindow().getAttributes().x;
-        float mCurrentY = getWindow().getAttributes().y;;
+        userToEvent = (ParseUserToEvent) Parcels.unwrap(getIntent().getParcelableExtra("markerDetails"));
+        eventDistance = (int) getIntent().getIntExtra("distance", 0);
 
-        Log.i(TAG, "onCreate: " + mCurrentX);
-        Log.i(TAG, "onCreate: " + mCurrentY);
+        Log.i(TAG, "onCreate: " + eventDistance);
 
         gestureDetector = new GestureDetectorCompat(this, new MyGestureListener());
 
@@ -121,10 +126,6 @@ public class MarkerPopupWindow extends Activity {
 
             double rad = Math.atan2(y1-y2,x2-x1) + Math.PI;
             return (rad*180/Math.PI + 180)%360;
-        }
-
-        private void moveWindow(Direction direction) {
-            finish();
         }
     }
 }

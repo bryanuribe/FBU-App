@@ -1,11 +1,9 @@
 package com.example.pickup.queryUserToEvents;
 
-import android.util.Log;
 import android.util.Pair;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.pickup.managers.TimelineManager;
 import com.example.pickup.models.ParseUserToEvent;
 
 import java.util.List;
@@ -18,18 +16,15 @@ public class NotifyChangeUserToEvents implements Runnable {
 
     private MutableLiveData<List<Pair<ParseUserToEvent, Integer>>> mutable;
     private Future<List<Pair<ParseUserToEvent, Integer>>> futureUserToEvents;
-    private Integer filterDistance;
 
-    public NotifyChangeUserToEvents(Future<List<Pair<ParseUserToEvent, Integer>>> futureUserToEvents, MutableLiveData<List<Pair<ParseUserToEvent, Integer>>> mutable, Integer distance) {
+    public NotifyChangeUserToEvents(Future<List<Pair<ParseUserToEvent, Integer>>> futureUserToEvents, MutableLiveData<List<Pair<ParseUserToEvent, Integer>>> mutable) {
         this.futureUserToEvents = futureUserToEvents;
         this.mutable = mutable;
-        this.filterDistance = distance;
     }
 
     public void notifyUserToEvents() {
         try {
-            Log.i(TAG, "complete: " + futureUserToEvents.get().get(0).first.getObjectId());
-            mutable.postValue(TimelineManager.filterUserToEvents(futureUserToEvents.get(), filterDistance));
+            mutable.postValue(futureUserToEvents.get());
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {

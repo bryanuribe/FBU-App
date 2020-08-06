@@ -33,7 +33,7 @@ public class TimelineManager {
     private static final String TAG = "TimelineManager";
 
     @SuppressLint("MissingPermission")
-    public static void updateUserToEvents(final Context currentContext, final FusedLocationProviderClient mFusedLocationClient, final MutableLiveData<List<Pair<ParseUserToEvent, Integer>>> mutable, final TimelineTab currentTab, final Integer filterDistance) {
+    public static void updateData(final Context currentContext, final FusedLocationProviderClient mFusedLocationClient, final MutableLiveData<List<Pair<ParseUserToEvent, Integer>>> mutable, final TimelineTab currentTab) {
 
         Object[] queryParameters = getQueryParameters(currentTab);
 
@@ -52,7 +52,7 @@ public class TimelineManager {
                     ExecutorService executor = Executors.newFixedThreadPool(3);
                     Callable<List<Pair<ParseUserToEvent, Integer>>> queryUserToEvents = new QueryUserToEvents(queryType, availability, location);
                     Future<List<Pair<ParseUserToEvent, Integer>>> futureUserToEvents = executor.submit(queryUserToEvents);
-                    Runnable getQuery = new NotifyChangeUserToEvents(futureUserToEvents, mutable, filterDistance);
+                    Runnable getQuery = new NotifyChangeUserToEvents(futureUserToEvents, mutable);
                     executor.submit(getQuery);
                     executor.shutdown();
                 }
@@ -99,10 +99,10 @@ public class TimelineManager {
         }
     }
 
-    private static Object[] getQueryParameters(TimelineTab currentTab) {
+    public static Object[] getQueryParameters(TimelineTab currentTab) {
         Object queryParameters[] = new Object[2];
         if (currentTab == TimelineTab.ALL) {
-            queryParameters[0] = QueryType.ALL;
+            queryParameters[0] = QueryType.USER;
             queryParameters[1] = Availability.NA;
         }
         else if (currentTab == TimelineTab.GOING) {

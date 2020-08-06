@@ -12,8 +12,6 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -62,25 +60,26 @@ public class QueryUserToEvents implements Callable<List<Pair<ParseUserToEvent, I
 
     public static List<Pair<ParseUserToEvent, Integer>> sortByDistanceToEvent(Location userLocation, List<ParseUserToEvent> userToEvents) {
 
-        ArrayList<Pair<ParseUserToEvent, Integer>> userToEventsSorted = new ArrayList<>();
+        List<Pair<ParseUserToEvent, Integer>> userToEventsUnsorted = new ArrayList<>();
 
         for (ParseUserToEvent userToEvent : userToEvents) {
             int distance = findDistance(userLocation, userToEvent.getEvent().getGeopoint());
             Pair<ParseUserToEvent, Integer> pair = new Pair<>(userToEvent, distance);
-            userToEventsSorted.add(pair);
+            userToEventsUnsorted.add(pair);
         }
 
-        Collections.sort(userToEventsSorted, new Comparator<Pair>() {
-            @Override
-            public int compare(Pair p1, Pair p2) {
-                Integer p1Second = (Integer) p1.second;
-                Integer p2Second = (Integer) p2.second;
+        return mergeSort(userToEventsUnsorted);
+    }
 
-                return p1Second.compareTo(p2Second);
-            }
-        });
+    public static List<Pair<ParseUserToEvent, Integer>> mergeSort(List<Pair<ParseUserToEvent, Integer>> userToEvents) {
+        return userToEvents;
+    }
 
-        return userToEventsSorted;
+    public int compare(Pair p1, Pair p2) {
+        Integer p1Second = (Integer) p1.second;
+        Integer p2Second = (Integer) p2.second;
+
+        return p1Second.compareTo(p2Second);
     }
 
     public static int findDistance(Location userLocation, ParseGeoPoint eventLocation) {

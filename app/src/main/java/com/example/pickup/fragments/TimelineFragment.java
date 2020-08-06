@@ -109,6 +109,7 @@ public class TimelineFragment extends Fragment implements FilterDialogue.FilterD
             public void onChanged(List<Pair<ParseUserToEvent, Integer>> pairs) {
                 adapter.clear();
                 if (pairs != null) {
+                    pairs = TimelineManager.filterUserToEvents(pairs, filterDistance);
                     adapter.addAll(pairs);
                     adapter.notifyDataSetChanged();
                 }
@@ -166,7 +167,7 @@ public class TimelineFragment extends Fragment implements FilterDialogue.FilterD
                         break;
                 }
                 Log.i(TAG, "onTabSelected: " + currentTab);
-                TimelineManager.updateUserToEvents(getContext(), mFusedLocationClient, mutable, currentTab, filterDistance);
+                TimelineManager.updateData(getContext(), mFusedLocationClient, mutable, currentTab);
             }
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {}
@@ -180,7 +181,7 @@ public class TimelineFragment extends Fragment implements FilterDialogue.FilterD
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                TimelineManager.updateUserToEvents(getContext(), mFusedLocationClient, mutable, currentTab, filterDistance);
+                TimelineManager.updateData(getContext(), mFusedLocationClient, mutable, currentTab);
                 swipeContainer.setRefreshing(false);
             }
         });
@@ -190,7 +191,7 @@ public class TimelineFragment extends Fragment implements FilterDialogue.FilterD
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
-        TimelineManager.updateUserToEvents(getContext(), mFusedLocationClient, mutable, currentTab, filterDistance);
+        TimelineManager.updateData(getContext(), mFusedLocationClient, mutable, currentTab);
     }
 
     private void openFilterDialogue() {
@@ -203,11 +204,9 @@ public class TimelineFragment extends Fragment implements FilterDialogue.FilterD
     public void onDialogPositiveClick(FilterDialogue dialog, int distance) {
         Log.i(TAG, "onDialogPositiveClick: " + distance);
         filterDistance = distance;
-        TimelineManager.updateUserToEvents(getContext(), mFusedLocationClient, mutable, currentTab, filterDistance);
+        TimelineManager.updateData(getContext(), mFusedLocationClient, mutable, currentTab);
     }
 
     @Override
-    public void onDialogNegativeClick(FilterDialogue dialog) {
-
-    }
+    public void onDialogNegativeClick(FilterDialogue dialog) {}
 }

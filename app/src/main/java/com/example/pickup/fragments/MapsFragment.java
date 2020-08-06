@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,11 +12,15 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
 import com.example.pickup.R;
 import com.example.pickup.activities.MarkerPopupWindow;
+import com.example.pickup.enums.TimelineTab;
 import com.example.pickup.managers.MapsManager;
 import com.example.pickup.managers.UserManager;
+import com.example.pickup.models.ParseUserToEvent;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -27,13 +32,16 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 
 import org.jetbrains.annotations.NotNull;
+import org.parceler.Parcels;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MapsFragment extends Fragment implements MarkerPopupWindow.MarkerDialogueListener {
 
@@ -43,6 +51,9 @@ public class MapsFragment extends Fragment implements MarkerPopupWindow.MarkerDi
     private GoogleMap map;
 
     UserManager userManager;
+
+    private MutableLiveData mutable;
+    Map<Marker, Pair<ParseUserToEvent, Integer>> markerToData;
 
     // initializing FusedLocationProviderClient object
     private FusedLocationProviderClient mFusedLocationClient;
@@ -61,29 +72,23 @@ public class MapsFragment extends Fragment implements MarkerPopupWindow.MarkerDi
          * user has installed Google Play services and returned to the app.
          */
         @Override
-        public void onMapReady(GoogleMap googleMap) {
+        public void onMapReady(final GoogleMap googleMap) {
 
             map = googleMap;
-            map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                @Override
-                public boolean onMarkerClick(Marker marker) {
-                    //Log.i(TAG, "onMarkerClick: " + marker.getTitle());
-                    return false;
-                }
-            });
+            googleMap.clear();
 
             map.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                 @Override
                 public void onInfoWindowClick(Marker marker) {
-                    Log.i(TAG, "onInfoWindowClick: "  + marker.getTitle());
-                    openMarkerDialogue();
+
+                    Pair<ParseUserToEvent, Integer> markerDetails = markerToData.get(marker);
+
+                    openMarkerDialogue(markerDetails);
                 }
             });
 
-            // Query events from database and add markers
-            MapsManager.populateGoogleMaps(googleMap, "Public");
-
-            //getLastLocation();
+            // Move user to current location
+            MapsManager.moveCameraToUser(map, mFusedLocationClient);
         }
     };
 
@@ -99,11 +104,10 @@ public class MapsFragment extends Fragment implements MarkerPopupWindow.MarkerDi
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getContext());
+
         // Initialize the SDK
         Places.initialize(getContext(), apiKey);
-
-        // Create a new PlacesClient instance
-        PlacesClient placesClient = Places.createClient(getContext());
 
         final SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         if (mapFragment != null) {
@@ -125,7 +129,8 @@ public class MapsFragment extends Fragment implements MarkerPopupWindow.MarkerDi
                 Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
                 Log.i(TAG, "onPlaceSelected: " + place.getLatLng());
                 LatLng placeLatLng = place.getLatLng();
-                LatLng Your_Location = new LatLng(placeLatLng.latitude, placeLatLng.longitude); //Your LatLong
+                //Your LatLong
+                LatLng Your_Location = new LatLng(placeLatLng.latitude, placeLatLng.longitude);
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(Your_Location, 12));
             }
 
@@ -136,11 +141,48 @@ public class MapsFragment extends Fragment implements MarkerPopupWindow.MarkerDi
             }
         });
 
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getContext());
+        markerToData = new HashMap<>();
 
-        // method to get the location
-//        userManager.getLastLocation(mFusedLocationClient);
+        mutable = new MutableLiveData<>();
+        mutable.setValue(null);
+        mutable.observe(this, new Observer<List<Pair<ParseUserToEvent, Integer>>>() {
+            @Override
+            public void onChanged(List<Pair<ParseUserToEvent, Integer>> pairs) {
+                MapsManager.populateGoogleMaps(map, pairs, markerToData);
+            }
+        });
 
+        MapsManager.updateData(getContext(), mFusedLocationClient, mutable, TimelineTab.ALL);
+    }
+
+    private void openMarkerDialogue(Pair<ParseUserToEvent, Integer> markerDetails) {
+
+        Intent i = new Intent(getActivity(), MarkerPopupWindow.class);
+
+        Log.i(TAG, "openMarkerDialogue: " + markerDetails.first);
+        Log.i(TAG, "openMarkerDialogue: " + markerToData.size());
+
+        // serialize the post using parceler, use its short name as a key
+        i.putExtra("markerDetails", Parcels.wrap(markerDetails.first));
+        i.putExtra("distance", markerDetails.second);
+
+        startActivity(i);
+    }
+
+    @Override
+    public void applyUserAction(MarkerPopupWindow markerDialogue) {
+        Log.i(TAG, "applyUserAction: ");
+        Log.i(TAG, "applyUserAction: ");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Update Data
+        //MapsManager.updateData(getContext(), mFusedLocationClient, mutable, TimelineTab.ALL);
+        if (userManager.checkPermissions(getContext())) {
+            //getLastLocation();
+        }
     }
 
     // result if everything is okay
@@ -156,27 +198,6 @@ public class MapsFragment extends Fragment implements MarkerPopupWindow.MarkerDi
                 //getLastLocation();
             }
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (userManager.checkPermissions(getContext())) {
-            //getLastLocation();
-        }
-    }
-
-
-    private void openMarkerDialogue() {
-        MarkerPopupWindow markerPopupWindow = new MarkerPopupWindow();
-        Intent i = new Intent(getActivity(), MarkerPopupWindow.class);
-        startActivity(i);
-    }
-
-    @Override
-    public void applyUserAction(MarkerPopupWindow markerDialogue) {
-        Log.i(TAG, "applyUserAction: ");
-        Log.i(TAG, "applyUserAction: ");
     }
 }
 

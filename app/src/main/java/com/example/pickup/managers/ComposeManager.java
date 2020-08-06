@@ -11,8 +11,10 @@ import com.codepath.asynchttpclient.RequestParams;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.pickup.models.ParseEvent;
 import com.example.pickup.models.ParseUserToEvent;
+import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
@@ -20,6 +22,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Calendar;
+import java.util.List;
 
 import devs.mulham.horizontalcalendar.HorizontalCalendar;
 import okhttp3.Headers;
@@ -117,20 +120,28 @@ public class ComposeManager {
                         }
                     });
 
-                    // Save in userToEvent
-                    ParseUserToEvent newUserToEvent = new ParseUserToEvent();
-                    newUserToEvent.setUser(ParseUser.getCurrentUser());
-                    newUserToEvent.setEvent(newEvent);
-
-                    newUserToEvent.saveInBackground(new SaveCallback() {
+                    // Specify which class to query
+                    final ParseQuery<ParseUser> query = ParseQuery.getQuery(ParseUser.class);
+                    query.findInBackground(new FindCallback<ParseUser>() {
                         @Override
-                        public void done(ParseException e) {
-                            if (e != null) {
-                                Log.e(TAG, "done: Error while saving", e);
-                            }
-                            Log.i(TAG, "done: Save userToEvent successful!");
+                        public void done(List<ParseUser> users, ParseException e) {
+                            for (final ParseUser user: users) {
+                                // Save in userToEvent
+                                ParseUserToEvent newUserToEvent = new ParseUserToEvent();
+                                newUserToEvent.setUser(user);
+                                newUserToEvent.setEvent(newEvent);
 
-                            Toast.makeText(currentContext, "Event Created!", Toast.LENGTH_SHORT).show();
+                                newUserToEvent.saveInBackground(new SaveCallback() {
+                                    @Override
+                                    public void done(ParseException e) {
+                                        if (e != null) {
+                                            Log.e(TAG, "done: Error while saving", e);
+                                        }
+                                        Log.i(TAG, "done: Save userToEvent successful " + user.getUsername());
+                                    }
+                                });
+                                Toast.makeText(currentContext, "Event Created!", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
                 }

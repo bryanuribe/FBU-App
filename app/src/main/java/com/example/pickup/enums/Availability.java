@@ -1,7 +1,7 @@
 package com.example.pickup.enums;
 
 public enum Availability {
-    NA("NA"), GOING("Going"), MAYBE("Maybe"), NO("No");
+    NA("Not Specified"), GOING("Going"), MAYBE("Maybe"), NO("No");
 
     private final String availabilityStatus;
 
