@@ -1,5 +1,6 @@
 package com.example.pickup.fragments;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,8 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.pickup.dialogues.MarkerDialogue;
 import com.example.pickup.R;
+import com.example.pickup.activities.MarkerPopupWindow;
 import com.example.pickup.managers.MapsManager;
 import com.example.pickup.managers.UserManager;
 import com.google.android.gms.common.api.Status;
@@ -34,7 +35,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
-public class MapsFragment extends Fragment implements MarkerDialogue.MarkerDialogueListener {
+public class MapsFragment extends Fragment implements MarkerPopupWindow.MarkerDialogueListener {
 
     private static final String TAG = "MapsFragment";
     public static final String apiKey = "AIzaSyDAqSxvNJg6ricJ-kNRgkrqqOuvW8cf5z4";
@@ -85,11 +86,6 @@ public class MapsFragment extends Fragment implements MarkerDialogue.MarkerDialo
             //getLastLocation();
         }
     };
-
-    private void openMarkerDialogue() {
-        MarkerDialogue markerDialogue = new MarkerDialogue();
-        markerDialogue.show(getActivity().getSupportFragmentManager(), "Marker Dialogue");
-    }
 
     @Nullable
     @Override
@@ -170,8 +166,16 @@ public class MapsFragment extends Fragment implements MarkerDialogue.MarkerDialo
         }
     }
 
+
+    private void openMarkerDialogue() {
+        MarkerPopupWindow markerPopupWindow = new MarkerPopupWindow();
+        Intent i = new Intent(getActivity(), MarkerPopupWindow.class);
+        startActivity(i);
+    }
+
     @Override
-    public void applyUserAction() {
+    public void applyUserAction(MarkerPopupWindow markerDialogue) {
+        Log.i(TAG, "applyUserAction: ");
         Log.i(TAG, "applyUserAction: ");
     }
 }

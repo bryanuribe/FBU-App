@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.example.pickup.models.ParseEvent;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
@@ -34,7 +35,8 @@ public class MapsManager {
                     // Add event to map
                     ParseGeoPoint geopoint = event.getGeopoint();
                     LatLng eventLocation = new LatLng(geopoint.getLatitude(), geopoint.getLongitude());
-                    MarkerOptions marker = new MarkerOptions().position(eventLocation).title(event.getSport());
+                    MarkerOptions marker = new MarkerOptions().position(eventLocation).title(event.getSport()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
+                    marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
                     googleMap.addMarker(marker);
                 }
             }

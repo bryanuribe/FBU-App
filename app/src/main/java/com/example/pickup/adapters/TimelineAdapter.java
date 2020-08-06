@@ -28,10 +28,6 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
     private List<Pair<ParseUserToEvent, Integer>> userToEvents;
 
     private static final String TAG = "TimelineAdapter";
-    public static final String AVAILABILITY_GOING = "Going";
-    public static final String AVAILABILITY_MAYBE = "Maybe";
-    public static final String AVAILABILITY_NO = "No";
-    public static final String AVAILABILITY_NOT_SPECIFIED = "Not Specified";
 
     public TimelineAdapter(Context context, List<Pair<ParseUserToEvent, Integer>> userToEvents) {
         this.context = context;
@@ -182,7 +178,6 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
 
         public void updateAvailability() {
             // TODO: Only if not your events or all events
-            // TODO: Animate leaving item
             int adapterPosition = getAdapterPosition();
             userToEvents.remove(adapterPosition);
             notifyItemRemoved(adapterPosition);

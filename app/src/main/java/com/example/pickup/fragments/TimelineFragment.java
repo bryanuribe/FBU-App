@@ -136,6 +136,7 @@ public class TimelineFragment extends Fragment implements FilterDialogue.FilterD
         // Create the data source
         // Set the adapter on the recycler view
         rvEvents.setAdapter(adapter);
+
         rvEvents.setItemAnimator(new DefaultItemAnimator());
 
         // Set the layout manager on the recycler view

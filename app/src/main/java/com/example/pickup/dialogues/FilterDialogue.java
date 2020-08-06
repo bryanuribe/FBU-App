@@ -42,18 +42,18 @@ public class FilterDialogue extends AppCompatDialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialogue_filter, null);
 
-        builder.setView(view).setTitle("Filters").setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                listener.onDialogNegativeClick(FilterDialogue.this);
-            }
-        }).setPositiveButton("Save", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                int distance = seekBar.getProgress();
-                listener.onDialogPositiveClick(FilterDialogue.this, distance);
-            }
-        });
+        builder.setView(view).setTitle("Filters")
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        listener.onDialogNegativeClick(FilterDialogue.this); }})
+                .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        int distance = seekBar.getProgress();
+                        listener.onDialogPositiveClick(FilterDialogue.this, distance);
+                    }
+                });
 
         tvProgress = view.findViewById(R.id.tvProgress);
         seekBar = view.findViewById(R.id.seekBar);

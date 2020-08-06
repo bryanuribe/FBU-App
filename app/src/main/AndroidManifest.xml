@@ -58,6 +58,10 @@
         <activity android:name=".activities.MainActivity" />
         <activity android:name=".activities.SignupActivity" />
         <activity android:name=".activities.PreviewComposeActivity" />
+        <activity android:name=".activities.MarkerPopupWindow"
+            android:theme="@style/AppTheme.CustomTheme">
+        </activity>
+
     </application>
 
 </manifest>
