@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     public void switchContent(String fragmentTag) {
 
         FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.setCustomAnimations(R.anim.enter, R.anim.exit);
         Fragment nextFragment = fragmentManager.findFragmentByTag(fragmentTag);
 
         Log.i(TAG, "switchContent: " + nextFragment);

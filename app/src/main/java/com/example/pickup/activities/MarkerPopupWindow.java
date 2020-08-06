@@ -1,5 +1,6 @@
 package com.example.pickup.activities;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -8,12 +9,16 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.core.view.GestureDetectorCompat;
 
+import com.bumptech.glide.Glide;
 import com.example.pickup.R;
 import com.example.pickup.enums.Direction;
+import com.example.pickup.models.ParseEvent;
 import com.example.pickup.models.ParseUserToEvent;
 
 import org.parceler.Parcels;
@@ -27,6 +32,14 @@ public class MarkerPopupWindow extends Activity {
 
     private MarkerDialogueListener listener;
     private GestureDetectorCompat gestureDetector;
+
+    private ImageView ivSport;
+    private TextView tvSport;
+    private TextView tvLocation;
+    private TextView tvDistance;
+    private ImageView ivGoing;
+    private ImageView ivMaybe;
+    private ImageView ivNo;
     private Button btnCancel;
 
     public interface MarkerDialogueListener {
@@ -47,11 +60,41 @@ public class MarkerPopupWindow extends Activity {
         getWindow().setLayout((int) (width *.6), (int) (height *.4));
 
         userToEvent = (ParseUserToEvent) Parcels.unwrap(getIntent().getParcelableExtra("markerDetails"));
+        ParseEvent event = userToEvent.getEvent();
         eventDistance = (int) getIntent().getIntExtra("distance", 0);
 
-        Log.i(TAG, "onCreate: " + eventDistance);
+        String sport = event.getSport();
+        String location = event.getFormattedLocation();
+
+        Log.i(TAG, "onCreate: " + userToEvent.getEvent().getFormattedLocation());
 
         gestureDetector = new GestureDetectorCompat(this, new MyGestureListener());
+
+        ivSport = findViewById(R.id.ivSport);
+        if (sport.equals("Basketball")) {
+            Glide.with(this).load(R.drawable.ic_basketball).into(ivSport);
+        }
+        else {
+            Glide.with(this).load(R.drawable.ic_soccer_ball).into(ivSport);
+        }
+
+        ivGoing = findViewById(R.id.ivGoing);
+        ivGoing.setImageResource(R.color.colorGoing);
+
+        ivMaybe = findViewById(R.id.ivMaybe);
+        ivMaybe.setImageResource(R.color.colorMaybe);
+
+        ivNo = findViewById(R.id.ivNo);
+        ivNo.setImageResource(R.color.colorNo);
+
+        tvSport = findViewById(R.id.tvSport);
+        tvSport.setText(sport);
+
+        tvLocation = findViewById(R.id.tvLocation);
+        tvLocation.setText(location);
+
+        tvDistance = findViewById(R.id.tvDistance);
+        tvDistance.setText(String.valueOf(eventDistance) + " miles away");
 
         btnCancel = findViewById(R.id.btnCancel);
         btnCancel.setOnClickListener(new View.OnClickListener() {
@@ -62,16 +105,26 @@ public class MarkerPopupWindow extends Activity {
         });
     }
 
+    @SuppressLint("ResourceAsColor")
     public void finishRight() {
         super.finish();
+        this.getWindow().getDecorView().setBackgroundResource(R.color.colorGoing);
+        ivMaybe.setVisibility(View.INVISIBLE);
+        ivNo.setVisibility(View.INVISIBLE);
         overridePendingTransition(0, R.anim.to_right);
     }
     public void finishLeft() {
         super.finish();
+        this.getWindow().getDecorView().setBackgroundResource(R.color.colorNo);
+        ivGoing.setVisibility(View.INVISIBLE);
+        ivMaybe.setVisibility(View.INVISIBLE);
         overridePendingTransition(0, R.anim.to_left);
     }
     public void finishDown() {
         super.finish();
+        this.getWindow().getDecorView().setBackgroundResource(R.color.colorMaybe);
+        ivGoing.setVisibility(View.INVISIBLE);
+        ivNo.setVisibility(View.INVISIBLE);
         overridePendingTransition(0, R.anim.to_down);
     }
 

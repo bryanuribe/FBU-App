@@ -1,6 +1,7 @@
 package com.example.pickup.queryUserToEvents;
 
 import android.location.Location;
+import android.util.Log;
 import android.util.Pair;
 
 import com.example.pickup.enums.Availability;
@@ -60,19 +61,61 @@ public class QueryUserToEvents implements Callable<List<Pair<ParseUserToEvent, I
 
     public static List<Pair<ParseUserToEvent, Integer>> sortByDistanceToEvent(Location userLocation, List<ParseUserToEvent> userToEvents) {
 
-        List<Pair<ParseUserToEvent, Integer>> userToEventsUnsorted = new ArrayList<>();
+        ArrayList<Pair<ParseUserToEvent, Integer>> userToEventsSorted = new ArrayList<>();
 
         for (ParseUserToEvent userToEvent : userToEvents) {
             int distance = findDistance(userLocation, userToEvent.getEvent().getGeopoint());
             Pair<ParseUserToEvent, Integer> pair = new Pair<>(userToEvent, distance);
-            userToEventsUnsorted.add(pair);
+            userToEventsSorted.add(pair);
         }
 
-        return mergeSort(userToEventsUnsorted);
+        mergeSort(userToEventsSorted, userToEventsSorted.size());
+
+        return userToEventsSorted;
     }
 
-    public static List<Pair<ParseUserToEvent, Integer>> mergeSort(List<Pair<ParseUserToEvent, Integer>> userToEvents) {
-        return userToEvents;
+    public static void mergeSort(ArrayList<Pair<ParseUserToEvent, Integer>> input, int size) {
+
+        Log.i(TAG, "mergeSort: " + size);
+        if (size <= 1) {
+            return;
+        }
+
+        int mid = size / 2;
+
+        ArrayList<Pair<ParseUserToEvent, Integer>> left = new ArrayList<>();
+        ArrayList<Pair<ParseUserToEvent, Integer>> right = new ArrayList<>();
+
+        for (int i = 0; i < mid; i++) {
+            left.add(input.get(i));
+        }
+        for (int i = mid; i < size; i++) {
+            right.add(input.get(i));
+        }
+        mergeSort(left, mid);
+        mergeSort(right, size - mid);
+
+        merge(input, left, right, mid, size - mid);
+    }
+
+    public static void merge(
+            ArrayList<Pair<ParseUserToEvent, Integer>> input, ArrayList<Pair<ParseUserToEvent, Integer>> l, ArrayList<Pair<ParseUserToEvent, Integer>> r, int left, int right) {
+
+        int i = 0, j = 0, k = 0;
+        while (i < left && j < right) {
+            if (l.get(i).second <= r.get(j).second) {
+                input.set(k++, l.get(i++));
+            }
+            else {
+                input.set(k++, r.get(j++));
+            }
+        }
+        while (i < left) {
+            input.set(k++, l.get(i++));
+        }
+        while (j < right) {
+            input.set(k++, r.get(j++));
+        }
     }
 
     public int compare(Pair p1, Pair p2) {
