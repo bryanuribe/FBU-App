@@ -1,6 +1,3 @@
-FBU App Design Project
-===
-
 # PickUp+
 
 ## Table of Contents
